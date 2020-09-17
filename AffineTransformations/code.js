@@ -1,12 +1,12 @@
 const WIDTH = innerWidth * 0.65;
 const HEIGHT = innerHeight * 0.8;
 
-const SCALE = HEIGHT * 0.1;
+const SCALE = innerWidth * 0.015;
 
 const WIDTH_SPACE = WIDTH * 0.1;
 const HEIGHT_SPACE = 40 + HEIGHT * 0.1;
 
-const STROKE_WEIGHT = 7;
+const STROKE_WEIGHT = 1;
 
 const BLACK_COLOR = 0;
 const WHITE_COLOR = 255;
@@ -80,20 +80,56 @@ function draw() {
 }
 
 function connectPoints() {
-    connect(points[0], points[1]);
-    connect(points[1], points[2]);
-    connect(points[2], points[3]);
-    connect(points[3], points[0]);
+    // Connect outer border
+    for (let i = 0; i < 8; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[0], points[8]);
 
-    connect(points[4], points[5]);
-    connect(points[5], points[6]);
-    connect(points[6], points[7]);
-    connect(points[7], points[4]);
+    // Connect inner border
+    for (let i = 9; i < 14; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[9], points[14]);
 
-    connect(points[0], points[4]);
-    connect(points[1], points[5]);
-    connect(points[2], points[6]);
-    connect(points[3], points[7]);
+    for (let i = 15; i < 20; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[15], points[20]);
+
+    // Connect back outer border
+    for (let i = 21; i < 29; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[21], points[29]);
+
+    // Connect back inner border
+    for (let i = 30; i < 35; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[30], points[35]);
+
+    for (let i = 36; i < 41; i++) {
+        connect(points[i], points[i + 1]);
+    }
+    connect(points[36], points[41]);
+
+    // connect back and front
+    for (let i = 0; i < 8; i++) {
+        connect(points[i], points[i + 21]);
+    }
+    connect(points[8], points[29]);
+
+    for (let i = 9; i < 14; i++) {
+        connect(points[i], points[i + 21]);
+    }
+    connect(points[14], points[35]);
+
+    for (let i = 15; i < 20; i++) {
+        connect(points[i], points[i + 21]);
+    }
+    connect(points[20], points[41]);
+
 }
 
 function controllFigure() {
@@ -147,8 +183,6 @@ function controllFigure() {
         }
     }
 }
-
-
 
 // Z rotation
 function zRotation(vector) {
