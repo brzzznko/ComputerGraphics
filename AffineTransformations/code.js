@@ -9,9 +9,9 @@ const STROKE_WEIGHT = 1;
 const BLACK_COLOR = 0;
 const WHITE_COLOR = 255;
 
-const FPS = 30;
-
-var scale = innerWidth * 0.015;
+var scaleX = innerWidth * 0.015;
+var scaleY = innerWidth * 0.015;
+var scaleZ = innerWidth * 0.015;
 
 // Copy startPoints array;
 var points = startPoints.slice();
@@ -19,16 +19,22 @@ var points = startPoints.slice();
 function setup() {
     let cnv = createCanvas(WIDTH, HEIGHT, P2D);
     cnv.position(WIDTH_SPACE, HEIGHT_SPACE);
-    frameRate(FPS);
 
-    
-    scaleInput = createInput(scale.toString());
-    scaleInput.size(50);
-    scaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2)
+    xScaleInput = createInput(scaleX.toString());
+    xScaleInput.size(50);
+    xScaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2)
+
+    yScaleInput = createInput(scaleY.toString());
+    yScaleInput.size(50);
+    yScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * 2)
+
+    zScaleInput = createInput(scaleZ.toString());
+    zScaleInput.size(50);
+    zScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * 2)
 
     scaleButton = createButton("Scale");
     scaleButton.mouseClicked(setScale);
-    scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * 2);
+    scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * 2);
     scaleButton.style("font-size", "15px");
 
     zRotationCheckBox = createCheckbox('Rotate Z', false);
@@ -76,17 +82,17 @@ function draw() {
        
         points[i] = vector;
 
+        vector = scaleVector(vector);
         vector =  projection(vector);
 
         let x = math.subset(vector, math.index(0));
         let y = math.subset(vector, math.index(1));
 
-        point(x * scale, y * scale);
+        point(x, y);
     }
 
     connectPoints();
     controllFigure();
-
 }
 
 function connectPoints() {
@@ -214,33 +220,59 @@ function projection(vector) {
     return math.multiply(vector, projectionMatrix);
 }
 
-// Load figure start coordinates
+// Scale
+function scaleVector(vector) {
+    var scaleMatrix = math.matrix([
+        [scaleX, 0, 0, 0],
+        [0, scaleY, 0, 0],
+        [0, 0, scaleZ, 0],
+        [0, 0, 0, 1]
+    ]);
+
+    return math.multiply(scaleMatrix, vector);
+}
+
+
 function reset() {
+    // Load figure start coordinates
     points = startPoints.slice();
+    
+    // Set default scale
+    scaleX = innerWidth * 0.015;
+    scaleY = innerWidth * 0.015;
+    scaleZ = innerWidth * 0.015;
+
+    xScaleInput.value(scaleX.toString());
+    yScaleInput.value(scaleY.toString());
+    zScaleInput.value(scaleZ.toString());
 }
 
 function setScale() {
-    scale = parseFloat(scaleInput.value());
+    scaleX = parseFloat(xScaleInput.value());
+    scaleY = parseFloat(yScaleInput.value());
+    scaleZ = parseFloat(zScaleInput.value());
 }
 
 function connect(point, otherPoint) {
-    let vector = projection(point);
+    let vector = scaleVector(point);
+    vector = projection(vector);
 
     let x = math.subset(vector, math.index(0));
     let y = math.subset(vector, math.index(1));
 
-    vector = projection(otherPoint);
+    vector = scaleVector(otherPoint);
+    vector = projection(vector);
 
     let other_x = math.subset(vector, math.index(0));
     let other_y = math.subset(vector, math.index(1));
 
     stroke(WHITE_COLOR);
     strokeWeight(1);
-    line(x * scale, y * scale, other_x * scale, other_y * scale);
+    line(x, y, other_x, other_y);
 }
 
 function drawAxes() {
-    const LENGTH = 100
+    const LENGTH = 10000;
     
     // Draw Y axes
     stroke(color(0, 255, 0));
@@ -250,7 +282,7 @@ function drawAxes() {
     var x = math.subset(yVector, math.index(0));
     var y = math.subset(yVector, math.index(1));
 
-    line(0,0, x * scale, y * scale);
+    line(0, 0, x, y);
 
     // Draw X axes
     stroke(color(0, 0, 255));
@@ -259,7 +291,7 @@ function drawAxes() {
     var x = math.subset(xVector, math.index(0));
     var y = math.subset(xVector, math.index(1));
     
-    line(0,0, x * scale, y * scale);
+    line(0,0, x, y);
 
     // Draw Z axes
     stroke(color(255, 0, 0));
@@ -268,5 +300,5 @@ function drawAxes() {
     var x = math.subset(zVector, math.index(0));
     var y = math.subset(zVector, math.index(1));
     
-    line(0,0, x * scale, y * scale);
+    line(0,0, x, y);
 }
