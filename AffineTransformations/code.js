@@ -1,10 +1,8 @@
 const WIDTH = innerWidth * 0.65;
 const HEIGHT = innerHeight * 0.8;
 
-const SCALE = innerWidth * 0.015;
-
 const WIDTH_SPACE = WIDTH * 0.1;
-const HEIGHT_SPACE = 40 + HEIGHT * 0.1;
+const HEIGHT_SPACE = HEIGHT * 0.12;
 
 const STROKE_WEIGHT = 1;
 
@@ -12,6 +10,8 @@ const BLACK_COLOR = 0;
 const WHITE_COLOR = 255;
 
 const FPS = 30;
+
+var scale = innerWidth * 0.015;
 
 // Copy startPoints array;
 var points = startPoints.slice();
@@ -21,19 +21,29 @@ function setup() {
     cnv.position(WIDTH_SPACE, HEIGHT_SPACE);
     frameRate(FPS);
 
+    
+    scaleInput = createInput(scale.toString());
+    scaleInput.size(50);
+    scaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2)
+
+    scaleButton = createButton("Scale");
+    scaleButton.mouseClicked(setScale);
+    scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * 2);
+    scaleButton.style("font-size", "15px");
+
     zRotationCheckBox = createCheckbox('Rotate Z', false);
-    zRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2);
+    zRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 3);
 
     xRotationCheckBox = createCheckbox('Rotate X', false);
-    xRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 3);
+    xRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 4);
     
     yRotationCheckBox = createCheckbox('Rotate Y', false);
-    yRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 4);
+    yRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 5);
 
     resetButton = createButton("Reset");
     resetButton.mouseClicked(reset);
-    resetButton.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 5);
-    resetButton.style("font-size", "18px");
+    resetButton.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 6);
+    resetButton.style("font-size", "15px");
 }
 
 
@@ -71,7 +81,7 @@ function draw() {
         let x = math.subset(vector, math.index(0));
         let y = math.subset(vector, math.index(1));
 
-        point(x * SCALE, y * SCALE);
+        point(x * scale, y * scale);
     }
 
     connectPoints();
@@ -209,6 +219,10 @@ function reset() {
     points = startPoints.slice();
 }
 
+function setScale() {
+    scale = parseFloat(scaleInput.value());
+}
+
 function connect(point, otherPoint) {
     let vector = projection(point);
 
@@ -222,35 +236,37 @@ function connect(point, otherPoint) {
 
     stroke(WHITE_COLOR);
     strokeWeight(1);
-    line(x * SCALE, y * SCALE, other_x * SCALE, other_y * SCALE);
+    line(x * scale, y * scale, other_x * scale, other_y * scale);
 }
 
 function drawAxes() {
+    const LENGTH = 100
+    
     // Draw Y axes
     stroke(color(0, 255, 0));
     strokeWeight(1);
 
-    var yVector =  projection(math.matrix([0, 10, 0, 1]));
+    var yVector =  projection(math.matrix([0, LENGTH, 0, 1]));
     var x = math.subset(yVector, math.index(0));
     var y = math.subset(yVector, math.index(1));
 
-    line(0,0, x * SCALE, y * SCALE);
+    line(0,0, x * scale, y * scale);
 
     // Draw X axes
     stroke(color(0, 0, 255));
     
-    var xVector =  projection(math.matrix([10, 0, 0, 1]));
+    var xVector =  projection(math.matrix([LENGTH, 0, 0, 1]));
     var x = math.subset(xVector, math.index(0));
     var y = math.subset(xVector, math.index(1));
     
-    line(0,0, x * SCALE, y * SCALE);
+    line(0,0, x * scale, y * scale);
 
     // Draw Z axes
     stroke(color(255, 0, 0));
     
-    var zVector =  projection(math.matrix([0, 0, 10, 1]));
+    var zVector =  projection(math.matrix([0, 0, LENGTH, 1]));
     var x = math.subset(zVector, math.index(0));
     var y = math.subset(zVector, math.index(1));
     
-    line(0,0, x * SCALE, y * SCALE);
+    line(0,0, x * scale, y * scale);
 }
