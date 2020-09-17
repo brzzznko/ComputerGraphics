@@ -17,9 +17,11 @@ var scaleZ = innerWidth * 0.015;
 var points = startPoints.slice();
 
 function setup() {
+    // setup canvas
     let cnv = createCanvas(WIDTH, HEIGHT, P2D);
     cnv.position(WIDTH_SPACE, HEIGHT_SPACE);
 
+    // setup scale inputs
     xScaleInput = createInput(scaleX.toString());
     xScaleInput.size(50);
     xScaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2)
@@ -32,11 +34,13 @@ function setup() {
     zScaleInput.size(50);
     zScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * 2)
 
+    // setup scale button
     scaleButton = createButton("Scale");
     scaleButton.mouseClicked(setScale);
     scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * 2);
     scaleButton.style("font-size", "15px");
 
+    // Rotation checkboxes
     zRotationCheckBox = createCheckbox('Rotate Z', false);
     zRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 3);
 
@@ -46,6 +50,7 @@ function setup() {
     yRotationCheckBox = createCheckbox('Rotate Y', false);
     yRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 5);
 
+    // Reset button
     resetButton = createButton("Reset");
     resetButton.mouseClicked(reset);
     resetButton.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 6);
@@ -148,6 +153,7 @@ function connectPoints() {
 
 }
 
+// Move figure by arrow keys
 function controllFigure() {
     let movingValue = 0.1;
 
@@ -253,6 +259,7 @@ function setScale() {
     scaleZ = parseFloat(zScaleInput.value());
 }
 
+// Draw line between points
 function connect(point, otherPoint) {
     let vector = scaleVector(point);
     vector = projection(vector);
