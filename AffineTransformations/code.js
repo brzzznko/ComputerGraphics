@@ -352,32 +352,20 @@ function connect(point, otherPoint) {
 
 function drawAxes() {
     const LENGTH = 10000;
+    let zeroVector = math.matrix([0, 0, 0, 1]);
     
     // Draw Y axes
     stroke(color(0, 255, 0));
-    strokeWeight(1);
-
-    var yVector =  projection(math.matrix([0, LENGTH, 0, 1]));
-    var x = math.subset(yVector, math.index(0));
-    var y = math.subset(yVector, math.index(1));
-
-    line(0, 0, x, y);
+    var yVector =  math.matrix([0, LENGTH, 0, 1]);
+    connect(zeroVector, yVector);
 
     // Draw X axes
     stroke(color(0, 0, 255));
-    
-    var xVector =  projection(math.matrix([LENGTH, 0, 0, 1]));
-    var x = math.subset(xVector, math.index(0));
-    var y = math.subset(xVector, math.index(1));
-    
-    line(0,0, x, y);
+    var xVector =  math.matrix([LENGTH, 0, 0, 1]);
+    connect(zeroVector, xVector);
 
     // Draw Z axes
     stroke(color(255, 0, 0));
-    
-    var zVector =  projection(math.matrix([0, 0, LENGTH, 1]));
-    var x = math.subset(zVector, math.index(0));
-    var y = math.subset(zVector, math.index(1));
-    
-    line(0,0, x, y);
+    var zVector =  math.matrix([0, 0, LENGTH, 1]);
+    connect(zeroVector, zVector);
 }
