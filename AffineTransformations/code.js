@@ -13,6 +13,9 @@ var scaleX = innerWidth * 0.015;
 var scaleY = innerWidth * 0.015;
 var scaleZ = innerWidth * 0.015;
 
+var lineStartPoin;
+var lineEndPoint;
+
 // Copy startPoints array;
 var points = startPoints.slice();
 
@@ -21,40 +24,82 @@ function setup() {
     let cnv = createCanvas(WIDTH, HEIGHT, P2D);
     cnv.position(WIDTH_SPACE, HEIGHT_SPACE);
 
+    let fontSize = "15px";
+    let inputSize = 50;
+
+    let elementLineCount = 2;
+
     // setup scale inputs
     xScaleInput = createInput(scaleX.toString());
-    xScaleInput.size(50);
-    xScaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 2)
+    xScaleInput.size(inputSize);
+    xScaleInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
 
     yScaleInput = createInput(scaleY.toString());
-    yScaleInput.size(50);
-    yScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * 2)
+    yScaleInput.size(inputSize);
+    yScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * elementLineCount);
 
     zScaleInput = createInput(scaleZ.toString());
-    zScaleInput.size(50);
-    zScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * 2)
+    zScaleInput.size(inputSize);
+    zScaleInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * elementLineCount)
 
     // setup scale button
     scaleButton = createButton("Scale");
     scaleButton.mouseClicked(setScale);
-    scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * 2);
-    scaleButton.style("font-size", "15px");
+    scaleButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * elementLineCount);
+    scaleButton.style("font-size", fontSize);
 
     // Rotation checkboxes
+    elementLineCount++;
     zRotationCheckBox = createCheckbox('Rotate Z', false);
-    zRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 3);
+    zRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
 
+    elementLineCount++;
     xRotationCheckBox = createCheckbox('Rotate X', false);
-    xRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 4);
+    xRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
     
+    elementLineCount++;
     yRotationCheckBox = createCheckbox('Rotate Y', false);
-    yRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 5);
+    yRotationCheckBox.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
+
+    // setup line inputs
+    elementLineCount++;
+    xStartPointInput = createInput(0);
+    xStartPointInput.size(inputSize);
+    xStartPointInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
+
+    yStartPointInput = createInput(0);
+    yStartPointInput.size(inputSize);
+    yStartPointInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * elementLineCount);
+
+    zStartPointInput = createInput(0);
+    zStartPointInput.size(inputSize);
+    zStartPointInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * elementLineCount);
+
+    elementLineCount++;
+    xEndPointInput = createInput(0);
+    xEndPointInput.size(inputSize);
+    xEndPointInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
+
+    yEndPointInput = createInput(0);
+    yEndPointInput.size(inputSize);
+    yEndPointInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * elementLineCount);
+
+    zEndPointInput = createInput(0);
+    zEndPointInput.size(inputSize);
+    zEndPointInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * elementLineCount);
+
+    // Rotate button
+    resetButton = createButton("Rotate");
+    resetButton.mouseClicked(reset);
+    resetButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * elementLineCount);
+    resetButton.style("font-size", fontSize);
 
     // Reset button
+    elementLineCount++;
     resetButton = createButton("Reset");
     resetButton.mouseClicked(reset);
-    resetButton.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * 6);
-    resetButton.style("font-size", "15px");
+    resetButton.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
+    resetButton.style("font-size", fontSize);
 }
 
 
@@ -98,6 +143,59 @@ function draw() {
 
     connectPoints();
     controllFigure();
+}
+
+// Z rotation
+function zRotation(vector) {
+    return math.multiply(rotateZMatrix, vector);
+}
+
+// X rotation
+function xRotation(vector) {
+    return math.multiply(rotateXMatrix, vector);
+}
+
+// Y rotation
+function yRotation(vector) {
+    return math.multiply(rotateYMatrix, vector);
+}
+
+// Projection
+function projection(vector) {
+    return math.multiply(vector, projectionMatrix);
+}
+
+// Scale
+function scaleVector(vector) {
+    var scaleMatrix = math.matrix([
+        [scaleX, 0, 0, 0],
+        [0, scaleY, 0, 0],
+        [0, 0, scaleZ, 0],
+        [0, 0, 0, 1]
+    ]);
+
+    return math.multiply(scaleMatrix, vector);
+}
+
+
+function reset() {
+    // Load figure start coordinates
+    points = startPoints.slice();
+    
+    // Set default scale
+    scaleX = innerWidth * 0.015;
+    scaleY = innerWidth * 0.015;
+    scaleZ = innerWidth * 0.015;
+
+    xScaleInput.value(scaleX.toString());
+    yScaleInput.value(scaleY.toString());
+    zScaleInput.value(scaleZ.toString());
+}
+
+function setScale() {
+    scaleX = parseFloat(xScaleInput.value());
+    scaleY = parseFloat(yScaleInput.value());
+    scaleZ = parseFloat(zScaleInput.value());
 }
 
 function connectPoints() {
@@ -204,59 +302,6 @@ function controllFigure() {
             points[i] = math.matrix([x, y, z, 1]);
         }
     }
-}
-
-// Z rotation
-function zRotation(vector) {
-    return math.multiply(rotateZMatrix, vector);
-}
-
-// X rotation
-function xRotation(vector) {
-    return math.multiply(rotateXMatrix, vector);
-}
-
-// Y rotation
-function yRotation(vector) {
-    return math.multiply(rotateYMatrix, vector);
-}
-
-// Projection
-function projection(vector) {
-    return math.multiply(vector, projectionMatrix);
-}
-
-// Scale
-function scaleVector(vector) {
-    var scaleMatrix = math.matrix([
-        [scaleX, 0, 0, 0],
-        [0, scaleY, 0, 0],
-        [0, 0, scaleZ, 0],
-        [0, 0, 0, 1]
-    ]);
-
-    return math.multiply(scaleMatrix, vector);
-}
-
-
-function reset() {
-    // Load figure start coordinates
-    points = startPoints.slice();
-    
-    // Set default scale
-    scaleX = innerWidth * 0.015;
-    scaleY = innerWidth * 0.015;
-    scaleZ = innerWidth * 0.015;
-
-    xScaleInput.value(scaleX.toString());
-    yScaleInput.value(scaleY.toString());
-    zScaleInput.value(scaleZ.toString());
-}
-
-function setScale() {
-    scaleX = parseFloat(xScaleInput.value());
-    scaleY = parseFloat(yScaleInput.value());
-    scaleZ = parseFloat(zScaleInput.value());
 }
 
 // Draw line between points
