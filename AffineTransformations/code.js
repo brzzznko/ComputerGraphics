@@ -16,7 +16,7 @@ var scaleZ = innerWidth * 0.015;
 var lineStartPoint;
 var lineEndPoint;
 
-var isRotatinfAroundLine = false;
+var isRotatingAroundLine = false;
 
 // Copy startPoints array;
 var points = startPoints.slice();
@@ -113,10 +113,10 @@ function draw() {
 
     drawAxes();
 
-    if(isRotatinfAroundLine) {
+    if(isRotatingAroundLine) {
         stroke(color(153, 50, 204));
         strokeWeight(1);
-        drawLine(lineStartPoint, lineEndPoint);
+        connect(lineStartPoint, lineEndPoint);
     }
 
     // Draw figure
@@ -188,7 +188,7 @@ function scaleVector(vector) {
 }
 
 function rotationAroundLine() {
-    isRotatinfAroundLine = true;
+    isRotatingAroundLine = true;
 
     lineStartPoint = math.matrix([parseFloat(xStartPointInput.value()),
          parseFloat(yStartPointInput.value()), parseFloat(zStartPointInput.value()), 1]);
@@ -196,19 +196,6 @@ function rotationAroundLine() {
     lineEndPoint = math.matrix([parseFloat(xEndPointInput.value()),
         parseFloat(yEndPointInput.value()), parseFloat(zEndPointInput.value()), 1]);
 }
-
-function drawLine(point, otherPoint) {
-    var point =  projection(point);
-    var x = math.subset(point, math.index(0));
-    var y = math.subset(point, math.index(1));
-
-    var otherPoint =  projection(otherPoint);
-    var otherX = math.subset(otherPoint, math.index(0));
-    var otherY = math.subset(otherPoint, math.index(1));
-
-    line(x, y, otherX, otherY);
-}
-
 
 function reset() {
     // Load figure start coordinates
@@ -223,7 +210,7 @@ function reset() {
     yScaleInput.value(scaleY.toString());
     zScaleInput.value(scaleZ.toString());
 
-    isRotatinfAroundLine = false;
+    isRotatingAroundLine = false;
 
     xStartPointInput.value("0");
     yStartPointInput.value("0");
@@ -360,8 +347,6 @@ function connect(point, otherPoint) {
     let other_x = math.subset(vector, math.index(0));
     let other_y = math.subset(vector, math.index(1));
 
-    stroke(WHITE_COLOR);
-    strokeWeight(1);
     line(x, y, other_x, other_y);
 }
 
