@@ -13,8 +13,10 @@ var scaleX = innerWidth * 0.015;
 var scaleY = innerWidth * 0.015;
 var scaleZ = innerWidth * 0.015;
 
-var lineStartPoin;
+var lineStartPoint;
 var lineEndPoint;
+
+var isRotatinfAroundLine = false;
 
 // Copy startPoints array;
 var points = startPoints.slice();
@@ -63,34 +65,34 @@ function setup() {
 
     // setup line inputs
     elementLineCount++;
-    xStartPointInput = createInput(0);
+    xStartPointInput = createInput("0");
     xStartPointInput.size(inputSize);
     xStartPointInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
 
-    yStartPointInput = createInput(0);
+    yStartPointInput = createInput("0");
     yStartPointInput.size(inputSize);
     yStartPointInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * elementLineCount);
 
-    zStartPointInput = createInput(0);
+    zStartPointInput = createInput("0");
     zStartPointInput.size(inputSize);
     zStartPointInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * elementLineCount);
 
     elementLineCount++;
-    xEndPointInput = createInput(0);
+    xEndPointInput = createInput("0");
     xEndPointInput.size(inputSize);
     xEndPointInput.position(WIDTH + WIDTH_SPACE * 2, HEIGHT_SPACE * elementLineCount);
 
-    yEndPointInput = createInput(0);
+    yEndPointInput = createInput("0");
     yEndPointInput.size(inputSize);
     yEndPointInput.position(WIDTH + WIDTH_SPACE * 2 + 60, HEIGHT_SPACE * elementLineCount);
 
-    zEndPointInput = createInput(0);
+    zEndPointInput = createInput("0");
     zEndPointInput.size(inputSize);
     zEndPointInput.position(WIDTH + WIDTH_SPACE * 2 + 120, HEIGHT_SPACE * elementLineCount);
 
     // Rotate button
     resetButton = createButton("Rotate");
-    resetButton.mouseClicked(reset);
+    resetButton.mouseClicked(rotationAroundLine);
     resetButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * elementLineCount);
     resetButton.style("font-size", fontSize);
 
@@ -107,14 +109,22 @@ function setup() {
 function draw() {
     background(BLACK_COLOR);
     translate(WIDTH / 2, HEIGHT / 2);
+    strokeWeight(STROKE_WEIGHT);
 
     drawAxes();
 
+    if(isRotatinfAroundLine) {
+        stroke(color(153, 50, 204));
+        strokeWeight(1);
+        drawLine(lineStartPoint, lineEndPoint);
+    }
+
     // Draw figure
     stroke(WHITE_COLOR);
-    strokeWeight(STROKE_WEIGHT);
     
     for(var i = 0; i < points.length; i++) {
+        
+
 
         let vector = points[i];
 
@@ -177,6 +187,28 @@ function scaleVector(vector) {
     return math.multiply(scaleMatrix, vector);
 }
 
+function rotationAroundLine() {
+    isRotatinfAroundLine = true;
+
+    lineStartPoint = math.matrix([parseFloat(xStartPointInput.value()),
+         parseFloat(yStartPointInput.value()), parseFloat(zStartPointInput.value()), 1]);
+    
+    lineEndPoint = math.matrix([parseFloat(xEndPointInput.value()),
+        parseFloat(yEndPointInput.value()), parseFloat(zEndPointInput.value()), 1]);
+}
+
+function drawLine(point, otherPoint) {
+    var point =  projection(point);
+    var x = math.subset(point, math.index(0));
+    var y = math.subset(point, math.index(1));
+
+    var otherPoint =  projection(otherPoint);
+    var otherX = math.subset(otherPoint, math.index(0));
+    var otherY = math.subset(otherPoint, math.index(1));
+
+    line(x, y, otherX, otherY);
+}
+
 
 function reset() {
     // Load figure start coordinates
@@ -190,6 +222,16 @@ function reset() {
     xScaleInput.value(scaleX.toString());
     yScaleInput.value(scaleY.toString());
     zScaleInput.value(scaleZ.toString());
+
+    isRotatinfAroundLine = false;
+
+    xStartPointInput.value("0");
+    yStartPointInput.value("0");
+    zStartPointInput.value("0");
+
+    xEndPointInput.value("0");
+    yEndPointInput.value("0");
+    zEndPointInput.value("0");
 }
 
 function setScale() {
