@@ -9,6 +9,8 @@ const STROKE_WEIGHT = 1;
 const BLACK_COLOR = 0;
 const WHITE_COLOR = 255;
 
+const ROTATE_ANGLE = 1 * (Math.PI / 180);
+
 var scaleX = innerWidth * 0.015;
 var scaleY = innerWidth * 0.015;
 var scaleZ = innerWidth * 0.015;
@@ -92,7 +94,7 @@ function setup() {
 
     // Rotate button
     resetButton = createButton("Rotate");
-    resetButton.mouseClicked(rotationAroundLine);
+    resetButton.mouseClicked(rotationAroundLineButtonClicked);
     resetButton.position(WIDTH + WIDTH_SPACE * 2 + 190, HEIGHT_SPACE * elementLineCount);
     resetButton.style("font-size", fontSize);
 
@@ -111,11 +113,11 @@ function draw() {
     translate(WIDTH / 2, HEIGHT / 2);
     strokeWeight(STROKE_WEIGHT);
 
-    drawAxes();
+    drawAxises();
 
+    // Draw line to rotating around
     if(isRotatingAroundLine) {
         stroke(color(153, 50, 204));
-        strokeWeight(1);
         connect(lineStartPoint, lineEndPoint);
     }
 
@@ -123,55 +125,97 @@ function draw() {
     stroke(WHITE_COLOR);
     
     for(var i = 0; i < points.length; i++) {
-        
-
-
         let vector = points[i];
 
+        // Rotating around line
+        if (isRotatingAroundLine) {
+            vector = rotationAroundLine(vector, ROTATE_ANGLE);
+        }
+
+        // Rotating around Z axis
         if(zRotationCheckBox.checked()) {
-            vector = zRotation(vector);
+            vector = zRotation(vector,  Math.cos(ROTATE_ANGLE), Math.sin(ROTATE_ANGLE));
         }
 
+        // Rotating around X axis
         if(xRotationCheckBox.checked()) {
-            vector = xRotation(vector);
+            vector = xRotation(vector, Math.cos(ROTATE_ANGLE), Math.sin(ROTATE_ANGLE));
         }
-
+        
+        // Rotating around Y axis
         if(yRotationCheckBox.checked()) {
-            vector = yRotation(vector);
+            vector = yRotation(vector, Math.cos(ROTATE_ANGLE), Math.sin(ROTATE_ANGLE));
         }
-       
+        
+        // Save new coordinates
         points[i] = vector;
 
+        // Scale and projection vector
         vector = scaleVector(vector);
         vector =  projection(vector);
-
-        let x = math.subset(vector, math.index(0));
-        let y = math.subset(vector, math.index(1));
+        
+        // Draw point
+        let x = getX(vector);
+        let y = getY(vector);
 
         point(x, y);
     }
 
+    // Draw lines between points
     connectPoints();
+    
+    // Move figure by arrow keys
     controllFigure();
 }
 
 // Z rotation
-function zRotation(vector) {
+function zRotation(vector, cos, sin) {
+    var rotateZMatrix = math.matrix([
+        [cos, -sin, 0, 0],
+        [sin, cos, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+    ]);
+
     return math.multiply(rotateZMatrix, vector);
 }
 
 // X rotation
-function xRotation(vector) {
+function xRotation(vector, cos, sin) {
+    var rotateXMatrix = math.matrix([
+        [1, 0, 0, 0],
+        [0, cos, -sin, 0],
+        [0, sin, cos, 0],
+        [0, 0, 0, 1],
+    ]);
+
     return math.multiply(rotateXMatrix, vector);
 }
 
 // Y rotation
-function yRotation(vector) {
+function yRotation(vector, cos, sin) {
+    var rotateYMatrix = math.matrix([
+        [cos, 0, -sin, 0],
+        [0, 1, 0, 0],
+        [sin, 0, cos, 0],
+        [0, 0, 0, 1],
+    ]);
+
     return math.multiply(rotateYMatrix, vector);
 }
 
 // Projection
 function projection(vector) {
+    const F = 0.5;
+    const ANGLE = 45 * (Math.PI / 180);
+
+    const projectionMatrix = math.matrix([
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [-F * Math.cos(ANGLE), -F * Math.sin(ANGLE), 0, 0],
+        [0, 0, 0, 1],
+    ]);
+
     return math.multiply(vector, projectionMatrix);
 }
 
@@ -187,14 +231,95 @@ function scaleVector(vector) {
     return math.multiply(scaleMatrix, vector);
 }
 
-function rotationAroundLine() {
+// Move
+function moveVector(vector, x, y, z) {
+    var moveMatrix = math.matrix([
+        [1, 0, 0, x],
+        [0, 1, 0, y],
+        [0, 0, 1, z],
+        [0, 0, 0, 1]
+    ]);
+
+    return math.multiply(moveMatrix, vector);
+}
+
+function rotationAroundLine(vector, angle) {
+    // Get start point corrdinates
+    let x = getX(lineStartPoint);
+    let y = getY(lineStartPoint);
+    let z = getZ(lineStartPoint);
+
+    // Get end point coordinates
+    let xEnd = getX(lineEndPoint);
+    let yEnd = getY(lineEndPoint);
+    let zEnd = getZ(lineEndPoint);
+
+    // directed vector
+    directedVector = normalize(math.matrix([xEnd - x, yEnd - y, zEnd - z]));
+
+    var a = getX(directedVector);
+    var b = getY(directedVector);
+    var c = getZ(directedVector);
+
+    var d = Math.sqrt(b*b + c*c);
+
+    // Step 1: Translate space so that the rotation axis passes through the origin
+    vector = moveVector(vector, -x, -y, -z);
+    
+    // Step 2: Rotate space about the x axis 
+    // so that the rotation axis lies in the xz plane
+    if(d != 0) {
+        vector = xRotation(vector, c/d, b/d);
+    }
+    
+    // Step 3: Rotate space about the y axis 
+    // so that the rotation axis lies along the positive z axis.
+    vector = yRotation(vector, d, a);
+
+    // Step 4: perform the desired rotation about the z axis
+    vector = zRotation(vector, Math.cos(angle), Math.sin(angle));
+
+    // Undo step 3-1.
+    vector = yRotation(vector, d, -a);
+    
+    if (d != 0) {
+        vector = xRotation(vector, c/d, -b/d);
+    }
+   
+    vector = moveVector(vector, x, y, z);
+
+    return vector;
+}
+
+function normalize(vector) {
+    let x = getX(vector);
+    let y = getY(vector);
+    let z = getZ(vector);
+
+    let range = Math.sqrt(x*x + y*y + z*z);
+
+    if (range == 0)  
+        range = 1;
+
+    return math.matrix([x/range, y/range, z/range, 1]);
+}
+
+function rotationAroundLineButtonClicked() {
+    // Rotating around line is on
     isRotatingAroundLine = true;
 
-    lineStartPoint = math.matrix([parseFloat(xStartPointInput.value()),
-         parseFloat(yStartPointInput.value()), parseFloat(zStartPointInput.value()), 1]);
-    
-    lineEndPoint = math.matrix([parseFloat(xEndPointInput.value()),
-        parseFloat(yEndPointInput.value()), parseFloat(zEndPointInput.value()), 1]);
+    // Get points coordinates
+    var startX = parseFloat(xStartPointInput.value());
+    var startY = parseFloat(yStartPointInput.value());
+    var startZ = parseFloat(zStartPointInput.value());
+
+    lineStartPoint = math.matrix([startX, startY, startZ, 1]);
+
+    var endX = parseFloat(xEndPointInput.value());
+    var endY = parseFloat(yEndPointInput.value());
+    var endZ = parseFloat(zEndPointInput.value());
+
+    lineEndPoint = math.matrix([endX, endY, endZ, 1]);
 }
 
 function reset() {
@@ -210,15 +335,8 @@ function reset() {
     yScaleInput.value(scaleY.toString());
     zScaleInput.value(scaleZ.toString());
 
+    // Off rotating around line
     isRotatingAroundLine = false;
-
-    xStartPointInput.value("0");
-    yStartPointInput.value("0");
-    zStartPointInput.value("0");
-
-    xEndPointInput.value("0");
-    yEndPointInput.value("0");
-    zEndPointInput.value("0");
 }
 
 function setScale() {
@@ -227,6 +345,7 @@ function setScale() {
     scaleZ = parseFloat(zScaleInput.value());
 }
 
+// Draw lines between figure points
 function connectPoints() {
     // Connect outer border
     for (let i = 0; i < 8; i++) {
@@ -286,49 +405,25 @@ function controllFigure() {
 
     if(keyIsDown(LEFT_ARROW)) {
         for(var i = 0; i < points.length; i++) {
-            let x = math.subset(points[i], math.index(0));
-            let y = math.subset(points[i], math.index(1));
-            let z = math.subset(points[i], math.index(2));
-    
-            x -= movingValue;
-    
-            points[i] = math.matrix([x, y, z, 1]);
+            points[i] = moveVector(points[i], -movingValue, 0, 0);
         }
     }
 
     if(keyIsDown(RIGHT_ARROW)) {
-        for(var i = 0; i < points.length; i++) {
-            let x = math.subset(points[i], math.index(0));
-            let y = math.subset(points[i], math.index(1));
-            let z = math.subset(points[i], math.index(2));
-    
-            x += movingValue;
-    
-            points[i] = math.matrix([x, y, z, 1]);
+        for(var i = 0; i < points.length; i++) {    
+            points[i] = moveVector(points[i], movingValue, 0, 0);
         }
     }
 
     if(keyIsDown(UP_ARROW)) {
         for(var i = 0; i < points.length; i++) {
-            let x = math.subset(points[i], math.index(0));
-            let y = math.subset(points[i], math.index(1));
-            let z = math.subset(points[i], math.index(2));
-    
-            y -= movingValue;
-    
-            points[i] = math.matrix([x, y, z, 1]);
+            points[i] = moveVector(points[i], 0, -movingValue, 0);
         }
     }
 
     if(keyIsDown(DOWN_ARROW)) {
         for(var i = 0; i < points.length; i++) {
-            let x = math.subset(points[i], math.index(0));
-            let y = math.subset(points[i], math.index(1));
-            let z = math.subset(points[i], math.index(2));
-    
-            y += movingValue;
-    
-            points[i] = math.matrix([x, y, z, 1]);
+            points[i] = moveVector(points[i], 0, movingValue, 0);
         }
     }
 }
@@ -338,34 +433,46 @@ function connect(point, otherPoint) {
     let vector = scaleVector(point);
     vector = projection(vector);
 
-    let x = math.subset(vector, math.index(0));
-    let y = math.subset(vector, math.index(1));
+    let x = getX(vector);
+    let y = getY(vector);
 
     vector = scaleVector(otherPoint);
     vector = projection(vector);
 
-    let other_x = math.subset(vector, math.index(0));
-    let other_y = math.subset(vector, math.index(1));
+    let other_x = getX(vector);
+    let other_y = getY(vector);
 
     line(x, y, other_x, other_y);
 }
 
-function drawAxes() {
+function drawAxises() {
     const LENGTH = 10000;
     let zeroVector = math.matrix([0, 0, 0, 1]);
     
-    // Draw Y axes
+    // Draw Y axis
     stroke(color(0, 255, 0));
     var yVector =  math.matrix([0, LENGTH, 0, 1]);
     connect(zeroVector, yVector);
 
-    // Draw X axes
+    // Draw X axis
     stroke(color(0, 0, 255));
     var xVector =  math.matrix([LENGTH, 0, 0, 1]);
     connect(zeroVector, xVector);
 
-    // Draw Z axes
+    // Draw Z axis
     stroke(color(255, 0, 0));
     var zVector =  math.matrix([0, 0, LENGTH, 1]);
     connect(zeroVector, zVector);
+}
+
+function getX(vector) {
+    return math.subset(vector, math.index(0));
+}
+
+function getY(vector) {
+    return math.subset(vector, math.index(1));
+}
+
+function getZ(vector) {
+    return math.subset(vector, math.index(2));
 }
