@@ -15,8 +15,8 @@ var scaleX = innerWidth * 0.015;
 var scaleY = innerWidth * 0.015;
 var scaleZ = innerWidth * 0.015;
 
-var lineStartPoint;
-var lineEndPoint;
+var lineStartPoint = math.matrix([0, 0, 0, 1]);
+var lineEndPoint = math.matrix([0, 0, 0, 1]);
 
 var isRotatingAroundLine = false;
 
@@ -116,10 +116,9 @@ function draw() {
     drawAxises();
 
     // Draw line to rotating around
-    if(isRotatingAroundLine) {
-        stroke(color(153, 50, 204));
-        connect(lineStartPoint, lineEndPoint);
-    }
+    stroke(color(153, 50, 204));
+    connect(lineStartPoint, lineEndPoint);
+    
 
     // Draw figure
     stroke(WHITE_COLOR);
@@ -306,20 +305,25 @@ function normalize(vector) {
 
 function rotationAroundLineButtonClicked() {
     // Rotating around line is on
-    isRotatingAroundLine = true;
+    if (!isRotatingAroundLine) {
+        isRotatingAroundLine = true;
 
-    // Get points coordinates
-    var startX = parseFloat(xStartPointInput.value());
-    var startY = parseFloat(yStartPointInput.value());
-    var startZ = parseFloat(zStartPointInput.value());
+        // Get points coordinates
+        var startX = parseFloat(xStartPointInput.value());
+        var startY = parseFloat(yStartPointInput.value());
+        var startZ = parseFloat(zStartPointInput.value());
 
-    lineStartPoint = math.matrix([startX, startY, startZ, 1]);
+        lineStartPoint = math.matrix([startX, startY, startZ, 1]);
 
-    var endX = parseFloat(xEndPointInput.value());
-    var endY = parseFloat(yEndPointInput.value());
-    var endZ = parseFloat(zEndPointInput.value());
+        var endX = parseFloat(xEndPointInput.value());
+        var endY = parseFloat(yEndPointInput.value());
+        var endZ = parseFloat(zEndPointInput.value());
 
-    lineEndPoint = math.matrix([endX, endY, endZ, 1]);
+        lineEndPoint = math.matrix([endX, endY, endZ, 1]);
+    } else {
+        isRotatingAroundLine = false;
+    }
+    
 }
 
 function reset() {
@@ -337,6 +341,9 @@ function reset() {
 
     // Off rotating around line
     isRotatingAroundLine = false;
+
+    lineStartPoint = math.matrix([0, 0, 0, 1]);
+    lineEndPoint = math.matrix([0, 0, 0, 1]);
 }
 
 function setScale() {
