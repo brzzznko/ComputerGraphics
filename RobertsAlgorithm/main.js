@@ -11,9 +11,11 @@ const WHITE_COLOR = 255;
 
 const ROTATE_ANGLE = 1 * (Math.PI / 180);
 
-var scaleX = innerWidth * 0.015;
-var scaleY = innerWidth * 0.015;
-var scaleZ = innerWidth * 0.015;
+const START_SCALE = innerWidth * 0.07;
+
+var scaleX = START_SCALE;
+var scaleY = START_SCALE;
+var scaleZ = START_SCALE;
 
 var lineStartPoint = math.matrix([0, 0, 0, 1]);
 var lineEndPoint = math.matrix([0, 0, 0, 1]);
@@ -167,19 +169,6 @@ function draw() {
     controllFigure();
 }
 
-// Z rotation
-function zRotation(vector, cos, sin) {
-    var rotateZMatrix = math.matrix([
-        [cos, -sin, 0, 0],
-        [sin, cos, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1],
-    ]);
-
-    return math.multiply(rotateZMatrix, vector);
-}
-
-
 function rotationAroundLineButtonClicked() {
     // Rotating around line is on
     if (!isRotatingAroundLine) {
@@ -208,9 +197,9 @@ function reset() {
     points = startPoints.slice();
     
     // Set default scale
-    scaleX = innerWidth * 0.015;
-    scaleY = innerWidth * 0.015;
-    scaleZ = innerWidth * 0.015;
+    scaleX = START_SCALE;
+    scaleY = START_SCALE;
+    scaleZ = START_SCALE;
 
     xScaleInput.value(scaleX.toString());
     yScaleInput.value(scaleY.toString());
@@ -227,60 +216,6 @@ function setScale() {
     scaleX = parseFloat(xScaleInput.value());
     scaleY = parseFloat(yScaleInput.value());
     scaleZ = parseFloat(zScaleInput.value());
-}
-
-// Draw lines between figure points
-function connectPoints() {
-    // Connect outer border
-    for (let i = 0; i < 8; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[0], points[8]);
-
-    // Connect inner border
-    for (let i = 9; i < 14; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[9], points[14]);
-
-    for (let i = 15; i < 20; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[15], points[20]);
-
-    // Connect back outer border
-    for (let i = 21; i < 29; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[21], points[29]);
-
-    // Connect back inner border
-    for (let i = 30; i < 35; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[30], points[35]);
-
-    for (let i = 36; i < 41; i++) {
-        connect(points[i], points[i + 1]);
-    }
-    connect(points[36], points[41]);
-
-    // connect back and front
-    for (let i = 0; i < 8; i++) {
-        connect(points[i], points[i + 21]);
-    }
-    connect(points[8], points[29]);
-
-    for (let i = 9; i < 14; i++) {
-        connect(points[i], points[i + 21]);
-    }
-    connect(points[14], points[35]);
-
-    for (let i = 15; i < 20; i++) {
-        connect(points[i], points[i + 21]);
-    }
-    connect(points[20], points[41]);
-
 }
 
 // Move figure by arrow keys
@@ -310,53 +245,4 @@ function controllFigure() {
             points[i] = moveVector(points[i], 0, movingValue, 0);
         }
     }
-}
-
-// Draw line between points
-function connect(point, otherPoint) {
-    let vector = scaleVector(point);
-    vector = projection(vector);
-
-    let x = getX(vector);
-    let y = getY(vector);
-
-    vector = scaleVector(otherPoint);
-    vector = projection(vector);
-
-    let other_x = getX(vector);
-    let other_y = getY(vector);
-
-    line(x, y, other_x, other_y);
-}
-
-function drawAxises() {
-    const LENGTH = 10000;
-    let zeroVector = math.matrix([0, 0, 0, 1]);
-    
-    // Draw Y axis
-    stroke(color(0, 255, 0));
-    var yVector =  math.matrix([0, LENGTH, 0, 1]);
-    connect(zeroVector, yVector);
-
-    // Draw X axis
-    stroke(color(0, 0, 255));
-    var xVector =  math.matrix([LENGTH, 0, 0, 1]);
-    connect(zeroVector, xVector);
-
-    // Draw Z axis
-    stroke(color(255, 0, 0));
-    var zVector =  math.matrix([0, 0, LENGTH, 1]);
-    connect(zeroVector, zVector);
-}
-
-function getX(vector) {
-    return math.subset(vector, math.index(0));
-}
-
-function getY(vector) {
-    return math.subset(vector, math.index(1));
-}
-
-function getZ(vector) {
-    return math.subset(vector, math.index(2));
 }

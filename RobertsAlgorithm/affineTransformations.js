@@ -1,3 +1,15 @@
+// Z rotation
+function zRotation(vector, cos, sin) {
+    var rotateZMatrix = math.matrix([
+        [cos, -sin, 0, 0],
+        [sin, cos, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+    ]);
+
+    return math.multiply(rotateZMatrix, vector);
+}
+
 
 // X rotation
 function xRotation(vector, cos, sin) {
