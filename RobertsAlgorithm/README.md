@@ -1,3 +1,3 @@
-# AffineTransformations
-Implementation of basic affine transformations. </br>
-https://borzzzenko.github.io/ComputerGraphics/AffineTransformations/index.html
+# Robets algorithm
+Implementation of hidden-line removal Roberts algorithm. </br>
+https://borzzzenko.github.io/ComputerGraphics/RobertsAlgorithm/index.html
