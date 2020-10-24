@@ -23,7 +23,7 @@ var lineEndPoint = math.matrix([0, 0, 0, 1]);
 var isRotatingAroundLine = false;
 
 // Copy startPoints array;
-var points = startPoints.slice();
+const startPoints = points.slice();
 
 function setup() {
     // setup canvas
@@ -154,12 +154,6 @@ function draw() {
         // Scale and projection vector
         vector = scaleVector(vector);
         vector =  projection(vector);
-        
-        // Draw point
-        let x = getX(vector);
-        let y = getY(vector);
-
-        point(x, y);
     }
 
     // Draw lines between points
