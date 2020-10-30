@@ -8,7 +8,7 @@ function checkPlane(plane) {
     // Correcting equation
     var figureCenter = getCenterPoint();
 
-    if (math.multiply(equation, figureCenter) < 0) {
+    if (math.multiply(equation, figureCenter) > 0) {
         equation = math.multiply(equation, -1)
     }
 
@@ -50,7 +50,7 @@ function projectEquation(equation) {
     const projectionMatrix = math.inv([
         [1, 0, 0, 0],
         [0, 1, 0, 0],
-        [-F * Math.cos(ANGLE), -F * Math.sin(ANGLE), 1, 0],
+        [-F * Math.cos(ANGLE), -F * Math.sin(ANGLE), 0.1, 0],
         [0, 0, 0, 1],
     ]);
 
