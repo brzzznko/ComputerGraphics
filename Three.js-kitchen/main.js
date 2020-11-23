@@ -20,10 +20,10 @@ function main() {
 	document.body.appendChild(renderer.domElement);
 	
 	//Floor
-	const planeSize = 40;
+	const planeSize = 10;
 
 	const loader = new THREE.TextureLoader();
-	const texture = loader.load('./textures/wood-floor.jpg');
+	const texture = loader.load('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/textures/wood-floor.jpg');
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.magFilter = THREE.NearestFilter;
@@ -31,26 +31,29 @@ function main() {
 	texture.repeat.set(repeats, repeats);
 
 	const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-	const planeMat = new THREE.MeshBasicMaterial({
+	const planeMat = new THREE.MeshPhongMaterial({
 		map: texture,
 		side: THREE.DoubleSide,
 	});
-	const mesh = new THREE.Mesh(planeGeo, planeMat);
-	mesh.rotation.x = Math.PI * -.5;
-	scene.add(mesh);
+	const floor = new THREE.Mesh(planeGeo, planeMat);
+	floor.rotation.x = Math.PI * -.5;
+	floor.position.y += 0.1
+	scene.add(floor);
 
-	// Adding cube
-	var geometry = new THREE.BoxGeometry(1, 1, 1);
-	var material = new THREE.MeshPhongMaterial({color: 0x44aa88});
-	var cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
+	// Adding room walls
+	var geometry = new THREE.BoxGeometry(10, 5, 10);
+	var material = new THREE.MeshPhongMaterial({
+		color: 0xffffff,
+		side: THREE.DoubleSide
+	});
+	var roomCube = new THREE.Mesh(geometry, material);
+	roomCube.position.y += 2.5
+	scene.add(roomCube);
 
-	// Adding dircetional light
-	const color = 0xFFFFFF;
-	const intensity = 1;
-	const light = new THREE.DirectionalLight(color, intensity);
-	light.position.set(0, 1, 0);
-	scene.add(light);
+	// Light
+	const light = new THREE.PointLight( 0xffffff, 1, 15);
+	light.position.set(0, 3, 0);
+	scene.add( light );
 
 	// Camera controls
 	const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -59,9 +62,6 @@ function main() {
 	// Animation loop
 	var animate = function() {
 		requestAnimationFrame(animate);
-
-		//cube.rotation.x += 0.01;
-		//cube.rotation.y += 0.01;
 
 		controls.update();
 
