@@ -52,12 +52,31 @@ function main() {
 
 	// Light
 	const light = new THREE.PointLight( 0xffffff, 1, 15);
-	light.position.set(0, 3, 0);
+	light.position.set(0, 4, 0);
 	scene.add( light );
 
 	// Camera controls
 	const controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.update();
+
+	// Load Lamps model
+	const mtlLoader = new THREE.MTLLoader();
+	mtlLoader.setPath('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/models/')
+	mtlLoader.load('lamp.mtl', (materials) => {
+		materials.preload();
+
+		const objLoader = new THREE.OBJLoader();
+		objLoader.setMaterials(materials);
+		objLoader.setPath('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/models/');
+		objLoader.load('lamp.obj', (root) => {
+				root.scale.set(0.0025, 0.0025, 0.0025)
+				root.position.y += 4.33
+				scene.add(root);
+		});
+	})
+
+
+	
 
 	// Animation loop
 	var animate = function() {
