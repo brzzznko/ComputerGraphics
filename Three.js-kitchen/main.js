@@ -6,6 +6,8 @@ const ASPECT = WIDTH/HEIGHT
 const NEAR = 0.1
 const FAR = 1000
 
+const URL = "https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/"
+
 
 function main() {
 	// Create scene, camera and render
@@ -19,11 +21,11 @@ function main() {
 	renderer.setSize(WIDTH, HEIGHT);
 	document.body.appendChild(renderer.domElement);
 	
-	//Floor
+	// Floor
 	const planeSize = 10;
 
 	const loader = new THREE.TextureLoader();
-	const texture = loader.load('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/textures/wood-floor.jpg');
+	const texture = loader.load(URL + "textures/wood-floor.jpg");
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.magFilter = THREE.NearestFilter;
@@ -61,22 +63,19 @@ function main() {
 
 	// Load Lamps model
 	const mtlLoader = new THREE.MTLLoader();
-	mtlLoader.setPath('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/models/')
-	mtlLoader.load('lamp.mtl', (materials) => {
+	mtlLoader.setPath(URL + "models/")
+	mtlLoader.load("lamp.mtl", (materials) => {
 		materials.preload();
 
 		const objLoader = new THREE.OBJLoader();
 		objLoader.setMaterials(materials);
-		objLoader.setPath('https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/models/');
-		objLoader.load('lamp.obj', (root) => {
+		objLoader.setPath(URL + "models/");
+		objLoader.load("lamp.obj", (root) => {
 				root.scale.set(0.0025, 0.0025, 0.0025)
 				root.position.y += 4.33
 				scene.add(root);
 		});
 	})
-
-
-	
 
 	// Animation loop
 	var animate = function() {
