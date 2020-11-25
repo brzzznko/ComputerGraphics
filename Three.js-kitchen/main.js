@@ -26,17 +26,17 @@ function main() {
 	const planeSize = 10;
 	const textureLoader = new THREE.TextureLoader();
 	
-	const texture = textureLoader.load(URL + "textures/wood-floor.jpg");
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	texture.magFilter = THREE.NearestFilter;
+	const floorTexture = textureLoader.load(URL + "textures/wood-floor.jpg");
+	floorTexture.wrapS = THREE.RepeatWrapping;
+	floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.magFilter = THREE.NearestFilter;
 	
 	const repeats = planeSize / 2;
-	texture.repeat.set(repeats, repeats);
+	floorTexture.repeat.set(repeats, repeats);
 
 	const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
 	const planeMat = new THREE.MeshPhongMaterial({
-		map: texture,
+		map: floorTexture,
 		side: THREE.DoubleSide,
 	});
 	
@@ -83,8 +83,8 @@ function main() {
 	scene.add(lampFiber);
 	
 	// Lamp
-	var lampRadius = 2
-	var lampSegments = 64
+	var lampRadius = 2;
+	var lampSegments = 64;
 
 	var lampGeometry = new THREE.SphereGeometry(lampRadius, lampSegments,
 		 lampSegments);
@@ -119,7 +119,11 @@ function main() {
 		objLoader.setMaterials(materials);
 		objLoader.setPath(URL + "models/");
 		objLoader.load("chair.obj", (chair) => {
-				chair.traverse(function(child){child.castShadow = true;});
+				// First chair
+				chair.traverse(function(child){
+					child.castShadow = true;
+					child.receiveShadow = true;
+				});
 				chair.scale.set(0.02, 0.02, 0.02)
 				chair.rotation.x = Math.PI * -0.5;
 				chair.rotation.z += Math.PI * -0.3;
@@ -127,15 +131,79 @@ function main() {
 				chair.position.set(3.1, 0.97, -1.3);
 
 				scene.add(chair);
-
+				
+				// Second chair
 				clone = chair.clone();
 				clone.rotation.z += Math.PI * -0.7;
-				clone.position.set(2.1, 0.97, 2.1);
+				clone.position.set(2.1, 0.97, 2.7);
 
 				scene.add(clone);
 		});
 	})
+
+	// Table
+	const tableTexture = textureLoader.load(URL + "textures/table-black.jpg");
+	tableTexture.magFilter = THREE.NearestFilter
 	
+	// Table legs
+	var legTopRadius = 0.15;
+	var legBottomRadius = 0.1;
+	var legHeight = 1.27;
+	var legSegnments = 64;
+
+	var tableLegGeometry = new THREE.CylinderGeometry(legTopRadius, legBottomRadius,
+		legHeight, legSegnments);
+	var legMaterial = new THREE.MeshStandardMaterial({
+		map: tableTexture,
+		roughness: 0,
+	});
+	
+	var tableLeg = new THREE.Mesh(tableLegGeometry, legMaterial);
+	tableLeg.position.set(2, 0.75,  0.5);
+	tableLeg.castShadow = true;
+	tableLeg.receiveShadow = true;
+
+	scene.add(tableLeg);
+
+	// Table top
+	var tableTopRadius = 1.5;
+	var tableBottomRadius = 1.5;
+	var tableHeight = 0.1;
+	var tableSegnments = 64;
+
+	var tableGeometry = new THREE.CylinderGeometry(tableTopRadius, tableBottomRadius,
+		tableHeight, tableSegnments);
+	var tableMaterial = new THREE.MeshStandardMaterial({
+		map: tableTexture,
+		roughness: 0,
+	});
+	
+	var table = new THREE.Mesh(tableGeometry, tableMaterial);
+	table.position.set(2, 1.4, 0.5);
+	table.castShadow = true;
+	table.receiveShadow = true;
+
+	scene.add(table);
+
+	// Table bottom stand
+	var tableStandTopRadius = 0.5;
+	var tableStandBottomRadius = 0.5;
+	var tableStandHeight = 0.1;
+	var tableStandSegnments = 64;
+
+	var tableStandGeometry = new THREE.CylinderGeometry(tableStandTopRadius,
+		 tableStandBottomRadius, tableStandHeight, tableStandSegnments);
+	var tableStandMaterial = new THREE.MeshStandardMaterial({
+		map: tableTexture,
+		roughness: 0,
+	});
+	
+	var tableStand = new THREE.Mesh(tableStandGeometry, tableStandMaterial);
+	tableStand.position.set(2, 0.1, 0.5);
+	tableStand.receiveShadow = true;
+
+	scene.add(tableStand)
+
 	// Animation loop
 	var animate = function() {
 		requestAnimationFrame(animate);
