@@ -24,9 +24,9 @@ function main() {
 	
 	// Floor
 	const planeSize = 10;
-	const loader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 	
-	const texture = loader.load(URL + "textures/wood-floor.jpg");
+	const texture = textureLoader.load(URL + "textures/wood-floor.jpg");
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.magFilter = THREE.NearestFilter;
@@ -42,7 +42,7 @@ function main() {
 	
 	const floor = new THREE.Mesh(planeGeo, planeMat);
 	floor.rotation.x = Math.PI * -0.5;
-	floor.position.y += 0.1;
+	floor.position.set(0, 0.1, 0);
 	floor.receiveShadow = true;
 	
 	scene.add(floor);
@@ -60,7 +60,7 @@ function main() {
 
 	var roomCube = new THREE.Mesh(geometry, material);
 	roomCube.receiveShadow = true;
-	roomCube.position.y += 2.5;
+	roomCube.position.set(0, 2.5, 0);
 	
 	scene.add(roomCube);
 
@@ -77,7 +77,7 @@ function main() {
 	var fiberMaterial = new THREE.MeshPhongMaterial();
 	
 	var lampFiber = new THREE.Mesh(fiberGeometry, fiberMaterial);
-	lampFiber.position.y += 4.7;
+	lampFiber.position.set(0, 4.7, 0);
 	lampFiber.scale.set(0.1, 0.1, 0.1);
 	
 	scene.add(lampFiber);
@@ -93,7 +93,7 @@ function main() {
 	});
 	
 	var lamp = new THREE.Mesh(lampGeometry, lampMaterial);
-	lamp.position.y += 4.5;
+	lamp.position.set(0, 4.5, 0);
 	lamp.scale.set(0.1, 0.1, 0.1);
 	
 	scene.add(lamp);
@@ -104,18 +104,18 @@ function main() {
 
 	const lampLight = new THREE.PointLight( 0xffffff, lampLightIntensity,
 		 lampLightDistance);
-	lampLight.position.set(0, 3.8, 0);
+	lampLight.position.set(0, 4.5, 0);
 	lampLight.castShadow = true;
 	
 	scene.add(lampLight);
 	
 	// Load chairs
+	const objLoader = new THREE.OBJLoader();
 	const mtlLoader = new THREE.MTLLoader();
 	mtlLoader.setPath(URL + "models/")
 	mtlLoader.load("chair.mtl", (materials) => {
 		materials.preload();
 
-		const objLoader = new THREE.OBJLoader();
 		objLoader.setMaterials(materials);
 		objLoader.setPath(URL + "models/");
 		objLoader.load("chair.obj", (chair) => {
@@ -124,16 +124,13 @@ function main() {
 				chair.rotation.x = Math.PI * -0.5;
 				chair.rotation.z += Math.PI * -0.3;
 				
-				chair.position.y += 0.97
-				chair.position.x += 3.1
-				chair.position.z -= 1.3
+				chair.position.set(3.1, 0.97, -1.3);
 
 				scene.add(chair);
 
 				clone = chair.clone();
-				clone.position.z += 3.4
-				clone.position.x -= 1
 				clone.rotation.z += Math.PI * -0.7;
+				clone.position.set(2.1, 0.97, 2.1);
 
 				scene.add(clone);
 		});
