@@ -19,6 +19,7 @@ function main() {
 
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize(WIDTH, HEIGHT);
+	renderer.shadowMap.enabled = true;
 	document.body.appendChild(renderer.domElement);
 	
 	// Floor
@@ -42,6 +43,7 @@ function main() {
 	const floor = new THREE.Mesh(planeGeo, planeMat);
 	floor.rotation.x = Math.PI * -0.5;
 	floor.position.y += 0.1;
+	floor.receiveShadow = true;
 	
 	scene.add(floor);
 
@@ -57,6 +59,7 @@ function main() {
 	});
 
 	var roomCube = new THREE.Mesh(geometry, material);
+	roomCube.receiveShadow = true;
 	roomCube.position.y += 2.5;
 	
 	scene.add(roomCube);
@@ -101,10 +104,41 @@ function main() {
 
 	const lampLight = new THREE.PointLight( 0xffffff, lampLightIntensity,
 		 lampLightDistance);
-	lampLight.position.set(0, 4, 0);
+	lampLight.position.set(0, 3.8, 0);
+	lampLight.castShadow = true;
 	
 	scene.add(lampLight);
+	
+	// Load chairs
+	const mtlLoader = new THREE.MTLLoader();
+	mtlLoader.setPath(URL + "models/")
+	mtlLoader.load("chair.mtl", (materials) => {
+		materials.preload();
 
+		const objLoader = new THREE.OBJLoader();
+		objLoader.setMaterials(materials);
+		objLoader.setPath(URL + "models/");
+		objLoader.load("chair.obj", (chair) => {
+				chair.traverse(function(child){child.castShadow = true;});
+				chair.scale.set(0.02, 0.02, 0.02)
+				chair.rotation.x = Math.PI * -0.5;
+				chair.rotation.z += Math.PI * -0.3;
+				
+				chair.position.y += 0.97
+				chair.position.x += 3.1
+				chair.position.z -= 1.3
+
+				scene.add(chair);
+
+				clone = chair.clone();
+				clone.position.z += 3.4
+				clone.position.x -= 1
+				clone.rotation.z += Math.PI * -0.7;
+
+				scene.add(clone);
+		});
+	})
+	
 	// Animation loop
 	var animate = function() {
 		requestAnimationFrame(animate);
