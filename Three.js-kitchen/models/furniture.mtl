@@ -142,8 +142,8 @@ newmtl Fronds
 	Kd 0.0000 0.4588 0.2157
 	Ks 0.0450 0.0450 0.0450
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Program Files\Autodesk\3ds Max 2010\Maps\garlic.tga
-	map_Kd C:\Program Files\Autodesk\3ds Max 2010\Maps\garlic.tga
+	map_Ka resources\GARLIC.TGA
+	map_Kd resources\GARLIC.TGA
 
 newmtl Stalks
 	Ns 25.0000
@@ -168,7 +168,7 @@ newmtl Flowers
 	Kd 0.9098 0.4784 0.9059
 	Ks 0.0450 0.0450 0.0450
 	Ke 0.0000 0.0000 0.0000
-	map_d C:\Program Files\Autodesk\3ds Max 2010\Maps\flower6p.tga
+	map_d resourses\FLOWER6P.TGA
 
 newmtl wire_027177088
 	Ns 32
@@ -297,7 +297,7 @@ newmtl Leaves
 	Kd 0.0941 0.4000 0.0000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_d C:\Program Files\Autodesk\3ds Max 2010\Maps\bigleaf3.tga
+	map_d resources\BIGLEAF3.TGA
 
 newmtl wire_176026026
 	Ns 32
