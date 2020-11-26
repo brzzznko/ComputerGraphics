@@ -209,16 +209,16 @@ function main() {
 	);
 
 	// Load kitchen furniture
-	loadMTLplusOBJ(URL + "models/new-kitchen-furniture.mtl", URL + "models/new-kitchen-furniture.obj",
-		(furniture) => {
+	loadMTLplusOBJ(URL + "models/new-kitchen-furniture.mtl",
+	 	URL + "models/new-kitchen-furniture.obj", (furniture) => {
 			furniture.traverse(function(child) {
 				child.castShadow = true;
 				child.receiveShadow = true;
 			});
 
-			furniture.scale.set(0.05, 0.05, 0.05)
+			furniture.scale.set(0.018, 0.018, 0.018)
 			furniture.rotation.y += Math.PI * 0.5;
-			furniture.position.set(-4.8, 0.1, 2.1)
+			furniture.position.set(-4.28, 0.1, 1.2)
 
 			scene.add(furniture);
 		}
