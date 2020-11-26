@@ -23,7 +23,7 @@ function main() {
 	const FOV = 90;
 	const ASPECT = WIDTH/HEIGHT;
 	const NEAR = 0.1;
-	const FAR = 1000;
+	const FAR = 20;
 	
 	var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
 	camera.position.z = 5;
@@ -209,7 +209,7 @@ function main() {
 	);
 
 	// Load kitchen furniture
-	loadMTLplusOBJ(URL + "models/furniture.mtl", URL + "models/furniture.obj",
+	loadMTLplusOBJ(URL + "models/new-kitchen-furniture.mtl", URL + "models/new-kitchen-furniture.obj",
 		(furniture) => {
 			furniture.traverse(function(child) {
 				child.castShadow = true;
