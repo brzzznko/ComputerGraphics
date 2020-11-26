@@ -1,46 +1,62 @@
-# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
-# File Created: 04.01.2019 12:44:59
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 18.11.2011 19:48:33
 
-newmtl st_gold
+newmtl Refrigerator_handle
+	Ns 75.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.3294 0.3294 0.3294
+	Kd 0.3294 0.3294 0.3294
+	Ks 0.8100 0.8100 0.8100
+	Ke 0.0000 0.0000 0.0000
+
+newmtl 01___Default
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
-	Tr 1.0000
+	Tr 0.0000
 	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.0000 0.0000 0.0000
-	Kd 0.9451 0.7725 0.4078
-	Ks 0.0000 0.0000 0.0000
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0900 0.0900 0.0900
 	Ke 0.0000 0.0000 0.0000
-	map_Ka resources\Metal G6.jpg
-	map_Kd resources\Metal G6.jpg
 
-newmtl st_tile
-	Ns 70.0000
+newmtl Refrigerator1
+	Ns 60.0000
 	Ni 1.5000
 	d 1.0000
-	Tr 1.0000
+	Tr 0.0000
 	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.0000 0.0000 0.0000
-	Kd 0.9216 0.9216 0.9216
-	Ks 0.6300 0.6300 0.6300
+	Ka 0.8471 0.8471 0.8471
+	Kd 0.8471 0.8471 0.8471
+	Ks 0.7200 0.7200 0.7200
 	Ke 0.0000 0.0000 0.0000
-	map_Ka resources\metal_gl.jpg
-	map_Kd resources\metal_gl.jpg
-	map_bump resources\metal_gl.jpg
-	bump resources\metal_gl.jpg
 
-newmtl st_metal_2
-	Ns 55.0000
+newmtl refrigerator_leg
+	Ns 63.0000
 	Ni 1.5000
 	d 1.0000
-	Tr 1.0000
+	Tr 0.0000
 	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.0000 0.0000 0.0000
-	Kd 0.3098 0.3098 0.3098
-	Ks 1.0260 1.0260 1.0260
+	Ka 0.8784 0.8471 0.8275
+	Kd 0.8784 0.8471 0.8275
+	Ks 0.6750 0.6750 0.6750
 	Ke 0.0000 0.0000 0.0000
-	map_Ka resources\metalbl.jpg
-	map_Kd resources\metalbl.jpg
+
+newmtl refrigerator_bacl
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.2700 0.2700 0.2700
+	Ke 0.0000 0.0000 0.0000
