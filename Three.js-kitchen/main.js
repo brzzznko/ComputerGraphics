@@ -23,10 +23,10 @@ function main() {
 	const FOV = 90;
 	const ASPECT = WIDTH/HEIGHT;
 	const NEAR = 0.1;
-	const FAR = 20;
+	const FAR = 2000;
 	
 	var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
-	camera.position.z = 5;
+	camera.position.z = -5;
 
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize(WIDTH, HEIGHT);
@@ -211,14 +211,14 @@ function main() {
 	// Load kitchen furniture
 	loadMTLplusOBJ(URL + "models/furniture.mtl",
 	 	URL + "models/furniture.obj", (furniture) => {
+			console.log("materials laoded")
 			furniture.traverse(function(child) {
 				child.receiveShadow = true;
 				child.castShadow = true;
 			});
-
+			
 			furniture.scale.set(0.02, 0.02, 0.02)
-			furniture.rotation.y += Math.PI * 0.5;
-			furniture.position.set(-4.1, 2.2, 1.2)
+			furniture.position.set(-16.8, 0, -10.5)
 
 			scene.add(furniture);
 		}
