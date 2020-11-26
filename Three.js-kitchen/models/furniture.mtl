@@ -168,7 +168,7 @@ newmtl Flowers
 	Kd 0.9098 0.4784 0.9059
 	Ks 0.0450 0.0450 0.0450
 	Ke 0.0000 0.0000 0.0000
-	map_d resourses\FLOWER6P.TGA
+	map_d resources\FLOWER6P.TGA
 
 newmtl wire_027177088
 	Ns 32
