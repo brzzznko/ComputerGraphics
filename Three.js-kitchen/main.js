@@ -3,6 +3,17 @@ const HEIGHT = window.innerHeight - 100;
 
 const URL = "https://borzzzenko.github.io/ComputerGraphics/Three.js-kitchen/";
 
+// Load .obj model with .mtl
+function loadMTLplusOBJ(mtlURL, objURL, loadFunction) {
+	const objLoader = new THREE.OBJLoader();
+	const mtlLoader = new THREE.MTLLoader();
+	mtlLoader.load(mtlURL, (materials) => {
+		materials.preload();
+		objLoader.setMaterials(materials);
+		
+		objLoader.load(objURL, loadFunction);
+	})
+}
 
 function main() {
 	// Create scene, camera and render
@@ -108,38 +119,6 @@ function main() {
 	lampLight.castShadow = true;
 	
 	scene.add(lampLight);
-	
-	// Load chairs
-	const objLoader = new THREE.OBJLoader();
-	const mtlLoader = new THREE.MTLLoader();
-	mtlLoader.setPath(URL + "models/")
-	mtlLoader.load("chair.mtl", (materials) => {
-		materials.preload();
-
-		objLoader.setMaterials(materials);
-		objLoader.setPath(URL + "models/");
-		objLoader.load("chair.obj", (chair) => {
-				// First chair
-				chair.traverse(function(child){
-					child.castShadow = true;
-					child.receiveShadow = true;
-				});
-				chair.scale.set(0.02, 0.02, 0.02)
-				chair.rotation.x = Math.PI * -0.5;
-				chair.rotation.z += Math.PI * -0.3;
-				
-				chair.position.set(3.1, 0.97, -1.3);
-
-				scene.add(chair);
-				
-				// Second chair
-				clone = chair.clone();
-				clone.rotation.z += Math.PI * -0.7;
-				clone.position.set(2.1, 0.97, 2.7);
-
-				scene.add(clone);
-		});
-	})
 
 	// Table
 	const tableTexture = textureLoader.load(URL + "textures/table-black.jpg");
@@ -203,6 +182,47 @@ function main() {
 	tableStand.receiveShadow = true;
 
 	scene.add(tableStand)
+
+	// Load chairs
+	loadMTLplusOBJ(URL + "models/chair.mtl", URL + "models/chair.obj",
+		(chair) => {
+			// First chair
+			chair.traverse(function(child) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			});
+			chair.scale.set(0.02, 0.02, 0.02)
+			chair.rotation.x = Math.PI * -0.5;
+			chair.rotation.z += Math.PI * -0.3;
+			
+			chair.position.set(3.1, 0.97, -1.3);
+
+			scene.add(chair);
+			
+			// Second chair
+			clone = chair.clone();
+			clone.rotation.z += Math.PI * -0.7;
+			clone.position.set(2.1, 0.97, 2.7);
+
+			scene.add(clone);
+		 }
+	);
+
+	// Load kitchen furniture
+	loadMTLplusOBJ(URL + "models/furniture.mtl", URL + "models/furniture.obj",
+		(furniture) => {
+			furniture.traverse(function(child) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			});
+
+			furniture.scale.set(0.05, 0.05, 0.05)
+			furniture.rotation.y += Math.PI * 0.5;
+			furniture.position.set(-4.8, 0.1, 2.1)
+
+			scene.add(furniture);
+		}
+	);
 
 	// Animation loop
 	var animate = function() {
