@@ -23,7 +23,7 @@ function main() {
 	const FOV = 90;
 	const ASPECT = WIDTH/HEIGHT;
 	const NEAR = 0.1;
-	const FAR = 20000000;
+	const FAR = 100;
 	
 	var camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
 	camera.position.z = -5;
@@ -124,7 +124,7 @@ function main() {
 	const tableTexture = textureLoader.load(URL + "textures/table-black.jpg");
 	tableTexture.magFilter = THREE.NearestFilter
 	
-	// Table legs
+	// Table leg
 	var legTopRadius = 0.15;
 	var legBottomRadius = 0.1;
 	var legHeight = 1.27;
@@ -138,7 +138,7 @@ function main() {
 	});
 	
 	var tableLeg = new THREE.Mesh(tableLegGeometry, legMaterial);
-	tableLeg.position.set(2, 0.75,  0.5);
+	tableLeg.position.set(2, 0.75,  -1.5);
 	tableLeg.castShadow = true;
 	tableLeg.receiveShadow = true;
 
@@ -158,7 +158,7 @@ function main() {
 	});
 	
 	var table = new THREE.Mesh(tableGeometry, tableMaterial);
-	table.position.set(2, 1.4, 0.5);
+	table.position.set(2, 1.4, -1.5);
 	table.castShadow = true;
 	table.receiveShadow = true;
 
@@ -178,7 +178,7 @@ function main() {
 	});
 	
 	var tableStand = new THREE.Mesh(tableStandGeometry, tableStandMaterial);
-	tableStand.position.set(2, 0.1, 0.5);
+	tableStand.position.set(2, 0.1, -1.5);
 	tableStand.receiveShadow = true;
 
 	scene.add(tableStand)
@@ -195,14 +195,14 @@ function main() {
 			chair.rotation.x = Math.PI * -0.5;
 			chair.rotation.z += Math.PI * -0.3;
 			
-			chair.position.set(3.1, 0.97, -1.3);
+			chair.position.set(3.1, 0.97, -3.3);
 
 			scene.add(chair);
 			
 			// Second chair
 			clone = chair.clone();
 			clone.rotation.z += Math.PI * -0.7;
-			clone.position.set(2.1, 0.97, 2.7);
+			clone.position.set(2.1, 0.97, 0.4);
 
 			scene.add(clone);
 		 }
@@ -237,6 +237,21 @@ function main() {
 			fridge.position.set(-4.2, 0.1, -1.4)
 
 			scene.add(fridge);
+		}
+	);
+
+	// Load plant
+	loadMTLplusOBJ(URL + "models/plant.mtl",
+	 	URL + "models/plant.obj", (plant) => {
+			plant.traverse(function(child) {
+				child.receiveShadow = true;
+				child.castShadow = true;
+			});
+			
+			plant.scale.set(0.04, 0.04, 0.04)
+			plant.position.set(-3.2, 0.1, -3.6)
+
+			scene.add(plant);
 		}
 	);
 
