@@ -255,6 +255,21 @@ function main() {
 		}
 	);
 
+	// Load desk lamp
+	loadMTLplusOBJ(URL + "models/desk-lamp.mtl",
+	 	URL + "models/desk-lamp.obj", (deskLamp) => {
+			deskLamp.traverse(function(child) {
+				child.receiveShadow = true;
+				child.castShadow = true;
+			});
+			
+			//deskLamp.scale.set(0.04, 0.04, 0.04)
+			//deskLamp.position.set(-3.2, 0.1, -3.6)
+
+			scene.add(deskLamp);
+		}
+	);
+
 	// Animation loop
 	var animate = function() {
 		requestAnimationFrame(animate);
