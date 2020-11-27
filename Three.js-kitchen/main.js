@@ -264,7 +264,7 @@ function main() {
 			});
 			
 			//deskLamp.scale.set(0.04, 0.04, 0.04)
-			//deskLamp.position.set(-3.2, 0.1, -3.6)
+			deskLamp.position.set(-0, 0.1, -3.6)
 
 			scene.add(deskLamp);
 		}
