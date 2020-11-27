@@ -179,8 +179,8 @@ function main() {
 	
 	var tableStand = new THREE.Mesh(tableStandGeometry, tableStandMaterial);
 	tableStand.position.set(2, 0.1, -1.5);
-	tableLeg.castShadow = true;
-	tableLeg.receiveShadow = true;
+	tableStand.castShadow = true;
+	tableStand.receiveShadow = true;
 
 	scene.add(tableStand)
 
@@ -286,12 +286,6 @@ function main() {
 	
 	scene.add(deskLampLight);
 	scene.add(deskLampLight.target);
-
-	var geometry = new THREE.BoxGeometry(width, height, depth);
-	var material = new THREE.MeshPhongMaterial({
-		color: 0xffffff,
-		side: THREE.DoubleSide
-	});
 
 	// Animation loop
 	var animate = function() {
