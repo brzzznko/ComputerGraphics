@@ -179,7 +179,8 @@ function main() {
 	
 	var tableStand = new THREE.Mesh(tableStandGeometry, tableStandMaterial);
 	tableStand.position.set(2, 0.1, -1.5);
-	tableStand.receiveShadow = true;
+	tableLeg.castShadow = true;
+	tableLeg.receiveShadow = true;
 
 	scene.add(tableStand)
 
@@ -263,12 +264,34 @@ function main() {
 				child.castShadow = true;
 			});
 			
-			//deskLamp.scale.set(0.04, 0.04, 0.04)
-			deskLamp.position.set(-0, 0.1, -3.6)
+			deskLamp.scale.set(0.0003, 0.0003, 0.0003)
+			deskLamp.position.set(2.8, 1.4, -1.3)
+			deskLamp.rotation.y = Math.PI * 0.67;
 
 			scene.add(deskLamp);
 		}
 	);
+	
+	// Desk lamp light
+	var deskLampLightIntensity = 1;
+	var deskLampLightDistance = 0;
+	var deskLampLightAngle = 0.7;
+	var deskLampLightPenumbra = 0.3;
+
+	const deskLampLight = new THREE.SpotLight( 0xf0d75d, deskLampLightIntensity,
+		deskLampLightDistance, deskLampLightAngle, deskLampLightPenumbra);
+	deskLampLight.position.set(2.8, 2.6, -1.38);
+	deskLampLight.target.position.set(2, 1.5, -1);
+	deskLampLight.castShadow = true;
+	
+	scene.add(deskLampLight);
+	scene.add(deskLampLight.target);
+
+	var geometry = new THREE.BoxGeometry(width, height, depth);
+	var material = new THREE.MeshPhongMaterial({
+		color: 0xffffff,
+		side: THREE.DoubleSide
+	});
 
 	// Animation loop
 	var animate = function() {
