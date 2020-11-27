@@ -32,6 +32,10 @@ function main() {
 	renderer.setSize(WIDTH, HEIGHT);
 	renderer.shadowMap.enabled = true;
 	document.body.appendChild(renderer.domElement);
+
+	// Camera controls
+	const controls = new THREE.OrbitControls(camera, renderer.domElement);
+	controls.update();
 	
 	// Floor
 	const planeSize = 10;
@@ -74,10 +78,6 @@ function main() {
 	roomCube.position.set(0, 2.5, 0);
 	
 	scene.add(roomCube);
-
-	// Camera controls
-	const controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.update();
 
 	// Lamp fiber
 	var fiberRadius = 0.2;
@@ -217,8 +217,8 @@ function main() {
 				child.castShadow = true;
 			});
 			
-			furniture.scale.set(0.02, 0.02, 0.02)
-			furniture.position.set(-16.8, 0, -10.5)
+			furniture.scale.set(0.02, 0.02, 0.02);
+			furniture.position.set(-16.8, 0, -10.5);
 
 			scene.add(furniture);
 		}
@@ -234,8 +234,8 @@ function main() {
 			
 			fridge.rotation.x = Math.PI * -0.5;
 			fridge.rotation.z = Math.PI * 0.5;
-			fridge.scale.set(0.025, 0.025, 0.025)
-			fridge.position.set(-4.2, 0.1, -1.4)
+			fridge.scale.set(0.025, 0.025, 0.025);
+			fridge.position.set(-4.2, 0.1, -1.4);
 
 			scene.add(fridge);
 		}
@@ -249,10 +249,26 @@ function main() {
 				child.castShadow = true;
 			});
 			
-			plant.scale.set(0.04, 0.04, 0.04)
-			plant.position.set(-3.2, 0.1, -3.6)
+			plant.scale.set(0.04, 0.04, 0.04);
+			plant.position.set(-3.2, 0.1, -3.6);
 
 			scene.add(plant);
+		}
+	);
+
+	// Load mini chair
+	loadMTLplusOBJ(URL + "models/mini-chair.mtl",
+	 	URL + "models/mini-chair.obj", (chair) => {
+			chair.traverse(function(child) {
+				child.receiveShadow = true;
+				child.castShadow = true;
+			});
+			
+			chair.scale.set(0.0004, 0.0004, 0.0004);
+			chair.position.set(2, 1.4, -1.3);
+			chair.rotation.y = Math.PI * -0.67;
+
+			scene.add(chair);
 		}
 	);
 
@@ -264,8 +280,8 @@ function main() {
 				child.castShadow = true;
 			});
 			
-			deskLamp.scale.set(0.0003, 0.0003, 0.0003)
-			deskLamp.position.set(2.8, 1.4, -1.3)
+			deskLamp.scale.set(0.0003, 0.0003, 0.0003);
+			deskLamp.position.set(2.8, 1.4, -1.3);
 			deskLamp.rotation.y = Math.PI * 0.67;
 
 			scene.add(deskLamp);
@@ -280,7 +296,7 @@ function main() {
 
 	const deskLampLight = new THREE.SpotLight( 0xf0d75d, deskLampLightIntensity,
 		deskLampLightDistance, deskLampLightAngle, deskLampLightPenumbra);
-	deskLampLight.position.set(2.8, 2.6, -1.38);
+	deskLampLight.position.set(2.8, 2.6, -1.2);
 	deskLampLight.target.position.set(2, 1.5, -1);
 	deskLampLight.castShadow = true;
 	
