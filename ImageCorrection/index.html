@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Correction</title>
 
+    <style>
+        body { margin: 20; border-style: none; }
+        .canvas-wrapper { 
+            display: block;
+            margin-top: 5%;
+        }
+    </style>
+
+
     <!-- libs -->
 </head>
 
@@ -18,7 +27,9 @@
 
     <button id="loadButton">Load</button>
 
-    <div id="startImage" style="margin-top: 2%"></div>
+    <div class="canvas-wrapper">
+        <canvas id="canvas"></canvas>
+    </div>
     
     <!-- code -->
     <script src="main.js"></script>

@@ -1,21 +1,28 @@
-const defaultImageUrl = "https://www.kindpng.com/picc/m/236-2362818_anime-sempai-animegirl-heart-kawaii-cute-anime-girl.png"
+const defaultImageUrl = "https://i0.wp.com/www.tommyooi.com/wp-content/uploads/2020/05/david-edelstein-N4DbvTUDikw-unsplash-scaled.jpg?fit=600%2C400&ssl=1"
+
+function getPixels(canvasContext, x, y) {
+    return canvasContext.getImageData(x,y, 1, 1);
+}
 
 function main() {
+    const canvas = document.getElementById("canvas");
+    canvas.setAttribute("width", "600");
+    canvas.setAttribute("height", "400");
+    canvas.setAttribute("margin-top", "30%");
+    
+    const context = canvas.getContext('2d');
+
     // Load button
     const loadButton = document.getElementById("loadButton");
     // Loading image when button clicked
     loadButton.addEventListener("click", () => {
         var url = urlInput.value;
         
-        var place = document.getElementById("startImage");
-        place.innerHTML = "";
-
-        var image = document.createElement("img");
+        let image = document.createElement("img");
         image.setAttribute("src", url);
-        image.setAttribute("width", "600");
-        image.setAttribute("margin-top", "30%");
-        
-        place.appendChild(image);
+        image.setAttribute("crossOrigin", "");
+
+        context.drawImage(image, 0, 0);
     })
 
     // InputLabel
@@ -28,9 +35,6 @@ function main() {
     urlInput.setAttribute("value", defaultImageUrl);
 
     loadButton.click();
-    
-    // Getting image
-    var image = document.getElementById("startImage").children[0];
 }
 
 main()
