@@ -6,15 +6,36 @@
     <title>Image Correction</title>
 
     <style>
-        body { margin: 20; border-style: none; }
-        .canvas-wrapper { 
-            display: block;
-            margin-top: 5%;
+        body {
+            margin: 20;
+            border-style: none; 
         }
+        button {
+            display: inline-block;
+            position: absolute;
+            margin-left: 5px;
+        }
+        #histButton {
+            top: 110px;
+        }
+        #canvas {
+            width: 600px;
+            height: 400px;
+            margin-top: 30px;
+            border: 1px;
+            border-style: solid;
+        }
+        #chart {
+            margin-top: 50px;
+        }
+        
     </style>
 
 
     <!-- libs -->
+    <!-- chart.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+	
 </head>
 
 <body>
@@ -22,14 +43,14 @@
         <h1 style="text-align: center;"> Image Correction </h1>
     </div>
 
-    <label for="urlInput" id="inputLable">Image URL:</label>
+    <label for="urlInput" id="inputLabel">Image URL:</label>
     <input type="text" id="urlInput" name="urlInput" required>
-
+    
     <button id="loadButton">Load</button>
-
-    <div class="canvas-wrapper">
-        <canvas id="canvas"></canvas>
-    </div>
+    <button id="histButton">Draw brightness histogram</button>
+    
+    <canvas id="canvas"></canvas>
+    <canvas id="chart"></canvas>
     
     <!-- code -->
     <script src="main.js"></script>
