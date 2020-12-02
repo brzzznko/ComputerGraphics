@@ -1,27 +1,23 @@
 const defaultImageUrl = "https://i1.wp.com/www.bitcoincenternyc.com/wp-content/uploads/2019/04/Japan-G20.jpg?fit=4181%2C2787&ssl=1"
-
-// Get pixel data from canvas
-function getPixels(x, y) {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext('2d');
-    
-    return context.getImageData(x, y, 1, 1);
-}
+const BUTTON_DISTANCE = 30;
 
 function drawBrightnessHistogram() {
     const canvas = document.getElementById("canvas");
+    const context = canvas.getContext('2d')
     
-    // compute brightness
+    // Get image data from canvas
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    // Compute brightness
     var dict = Array(256).fill(0);
-    
-    for (let y = 0; y < canvas.height; y++) {
-        for (let x = 0; x < canvas.width; x++) {
-            var colors = getPixels(x, y).data;
-            
-            var brightness = Math.round(0.299 * colors[0] + 0.5876 * colors[1] + 0.114 * colors[2]);
-            
-            dict[brightness] += 1;
-        }
+
+    for (var i = 0; i < data.length; i += 4) {
+        var brightness = Math.round(
+            0.299 * data[i] + 0.5876 * data[i + 1] + 0.114 * data[i + 2]
+        );
+        
+        dict[brightness] += 1;
     }
 
     // Draw histogram
@@ -56,9 +52,43 @@ function drawBrightnessHistogram() {
     });
 }
 
+function invert() {
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext('2d');
+
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    for (var i = 0; i < data.length; i += 4) {
+        data[i] = 255 - data[i];         // red
+        data[i + 1] = 255 - data[i + 1]; // green
+        data[i + 2] = 255 - data[i + 2]; // blue
+    }
+
+    context.putImageData(imageData, 0, 0);
+};
+
+function grayscale() {
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext('2d');
+    
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    for (var i = 0; i < data.length; i += 4) {
+        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = avg; // red
+        data[i + 1] = avg; // green
+        data[i + 2] = avg; // blue
+    }
+
+    context.putImageData(imageData, 0, 0);
+};
+
 function main() {
     // Load button
     const loadButton = document.getElementById("loadButton");
+    
     // Loading image when button clicked
     loadButton.addEventListener("click", () => {
         const canvas = document.getElementById("canvas");
@@ -67,6 +97,7 @@ function main() {
         var url = urlInput.value;
         
         let image = document.createElement("img");
+        
         image.onload = function() {
             canvas.setAttribute("width", canvas.offsetWidth);
             canvas.setAttribute("height", canvas.offsetHeight);
@@ -74,10 +105,9 @@ function main() {
             context.drawImage(image, 0, 0, image.width, image.height,
                  0, 0, canvas.offsetWidth, canvas.offsetHeight);
         }
+
         image.setAttribute("src", url);
         image.setAttribute("crossOrigin", "");
-
-        
     })
 
     // Draw brightness histogram button
@@ -89,9 +119,30 @@ function main() {
     
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
-    var inputOffset = inputLabel.offsetWidth + loadButton.offsetWidth + 70;
+    var inputOffset = inputLabel.offsetWidth +
+        loadButton.offsetWidth + 70;
+    
     urlInput.style.width = window.innerWidth - inputOffset + "px";
     urlInput.setAttribute("value", defaultImageUrl);
+
+    // Adding listener to grayscaleButton
+    const grayscaleButton = document.getElementById("grayscaleButton");
+    grayscaleButton.addEventListener("click", grayscale);
+
+    // Adding listener to invertButton
+    const invertButton = document.getElementById("invertButton");
+    invertButton.addEventListener("click", invert);
+
+    /*const brightnessInput = document.getElementById("brightnessInput");
+
+    const brightnessButton = document.getElementById("brightnessButton");
+    
+    brightnessButton.addEventListener("click", () => {
+        const output = document.getElementById("outputCanvas");
+        var number =  brightnessInput.value;
+        drawBrightnessAdjustment(output, number);
+    });*/
+
 }
 
 main()
