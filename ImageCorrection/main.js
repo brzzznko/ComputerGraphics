@@ -82,7 +82,6 @@ function main() {
 
     // Draw brightness histogram button
     const histButton = document.getElementById("histButton");
-    histButton.style.left = window.innerWidth - histButton.offsetWidth;
     histButton.addEventListener("click", drawBrightnessHistogram);
 
     // InputLabel
@@ -90,7 +89,7 @@ function main() {
     
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
-    var inputOffset = inputLabel.offsetWidth + histButton.offsetWidth + 70;
+    var inputOffset = inputLabel.offsetWidth + loadButton.offsetWidth + 70;
     urlInput.style.width = window.innerWidth - inputOffset + "px";
     urlInput.setAttribute("value", defaultImageUrl);
 }

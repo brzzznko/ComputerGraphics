@@ -16,12 +16,22 @@
             margin-left: 5px;
         }
         #histButton {
-            top: 110px;
+            top: 130px;
+            margin-left: 15px;
         }
         #canvas {
-            width: 600px;
-            height: 400px;
+            display: inline-block;
+            width: 37.5vw;
+            height: 50vh;
             margin-top: 30px;
+            border: 1px;
+            border-style: solid;
+        }
+        #outputCanvas {
+            width: 37.5vw;
+            height: 50vh;
+            margin-top: 30px;
+            margin-left: 30px;
             border: 1px;
             border-style: solid;
         }
@@ -47,9 +57,13 @@
     <input type="text" id="urlInput" name="urlInput" required>
     
     <button id="loadButton">Load</button>
-    <button id="histButton">Draw brightness histogram</button>
+    <div></div>
     
     <canvas id="canvas"></canvas>
+    <canvas id="outputCanvas"></canvas>
+
+    <button id="histButton">Draw brightness histogram</button>
+
     <canvas id="chart"></canvas>
     
     <!-- code -->
