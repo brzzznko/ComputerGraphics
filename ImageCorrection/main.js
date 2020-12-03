@@ -1,10 +1,10 @@
 const defaultImageUrl = "https://i1.wp.com/www.bitcoincenternyc.com/wp-content/uploads/2019/04/Japan-G20.jpg?fit=4181%2C2787&ssl=1"
 const BUTTON_DISTANCE = 30;
 
+const canvas = document.getElementById("canvas");
+const context = canvas.getContext('2d')
+
 function drawBrightnessHistogram() {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext('2d')
-    
     // Get image data from canvas
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -12,12 +12,20 @@ function drawBrightnessHistogram() {
     // Compute brightness
     var dict = Array(256).fill(0);
 
-    for (var i = 0; i < data.length; i += 4) {
+    for (let i = 0; i < data.length; i += 4) {
         var brightness = Math.round(
             0.299 * data[i] + 0.5876 * data[i + 1] + 0.114 * data[i + 2]
         );
         
         dict[brightness] += 1;
+    }
+
+    const maxValue = 3000;
+
+    for (let i = 0; i < dict.length; i += 1) {
+        if(dict[i] > maxValue) {
+            dict[i] = maxValue;
+        }
     }
 
     // Draw histogram
@@ -53,9 +61,6 @@ function drawBrightnessHistogram() {
 }
 
 function invert() {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext('2d');
-
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
     
@@ -69,9 +74,6 @@ function invert() {
 };
 
 function grayscale() {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext('2d');
-    
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
     
@@ -91,9 +93,6 @@ function main() {
     
     // Loading image when button clicked
     loadButton.addEventListener("click", () => {
-        const canvas = document.getElementById("canvas");
-        const context = canvas.getContext('2d');
-        
         var url = urlInput.value;
         
         let image = document.createElement("img");
@@ -114,15 +113,8 @@ function main() {
     const histButton = document.getElementById("histButton");
     histButton.addEventListener("click", drawBrightnessHistogram);
 
-    // InputLabel
-    const inputLabel = document.getElementById("inputLabel");
-    
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
-    var inputOffset = inputLabel.offsetWidth +
-        loadButton.offsetWidth + 70;
-    
-    urlInput.style.width = window.innerWidth - inputOffset + "px";
     urlInput.setAttribute("value", defaultImageUrl);
 
     // Adding listener to grayscaleButton
