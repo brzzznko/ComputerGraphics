@@ -30,8 +30,6 @@ function drawBrightnessHistogram(chart) {
 
     chart.config.data.datasets[0].data = dict;
     chart.update();
-
-    
 }
 
 function invert() {
@@ -69,6 +67,50 @@ function brightnessAdjustment(coefficent) {
         data[i] += coefficent;        // red
         data[i + 1] += coefficent;    // green
         data[i + 2] += coefficent;     // blue
+
+        if (data[i] > 255)
+            data[i] = 255;
+        else if (data[i] < 0)
+            data[i] = 0;
+        
+        if (data[i + 1] > 255)
+            data[i + 1] = 255;
+        else if (data[i + 1] < 0)
+            data[i + 1] = 0;
+        
+        if (data[i + 2] > 255)
+            data[i + 2] = 255;
+        else if (data[i + 2] < 0)
+            data[i + 2] = 0;
+    }
+
+    context.putImageData(imageData, 0, 0);
+}
+
+function contrastAdjustment(coefficent) {
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    let averageGray = 0;
+
+    for (var i = 0; i < data.length; i += 4) {
+        averageGray += (
+            data[i] * 0.2126 + data[i + 1] * 0.7152 + data[i + 2] * 0.0722
+        );
+    }
+
+    averageGray /= data.length / 4;
+    
+    for (var i = 0; i < data.length; i += 4) {
+        data[i] += Math.round(
+            (coefficent * (data[i] - averageGray) + averageGray) / 255
+        );    
+        data[i + 1] += Math.round(
+            (coefficent * (data[i + 1] - averageGray) + averageGray) / 255
+        );   
+        data[i + 2] += Math.round(
+            (coefficent * (data[i + 2] - averageGray) + averageGray) / 255
+        ); 
 
         if (data[i] > 255)
             data[i] = 255;
@@ -145,7 +187,7 @@ function main() {
         image.setAttribute("crossOrigin", "");
     })
 
-    // Draw brightness histogram button
+    // Adding listener to draw brightness histogram button
     const histButton = document.getElementById("histButton");
     histButton.addEventListener("click", () => {drawBrightnessHistogram(chart)});
 
@@ -171,8 +213,18 @@ function main() {
     const brightnessButton = document.getElementById("brightnessButton");
     
     brightnessButton.addEventListener("click", () => {
-        var coefficent =  parseInt(brightnessInput.value);
+        let coefficent =  parseInt(brightnessInput.value);
         brightnessAdjustment(coefficent);
+        drawBrightnessHistogram(chart);
+    });
+
+    const contrastInput = document.getElementById("contrastInput");
+    const contrastButton = document.getElementById("contrastButton");
+    
+    contrastButton.addEventListener("click", () => {
+        let coefficent =  parseFloat(eval(contrastInput.value));
+        console.log(coefficent);
+        contrastAdjustment(coefficent);
         drawBrightnessHistogram(chart);
     });
 }
