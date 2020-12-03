@@ -2,9 +2,9 @@ const defaultImageUrl = "https://i1.wp.com/www.bitcoincenternyc.com/wp-content/u
 const BUTTON_DISTANCE = 30;
 
 const canvas = document.getElementById("canvas");
-const context = canvas.getContext('2d')
+const context = canvas.getContext('2d');
 
-function drawBrightnessHistogram() {
+function drawBrightnessHistogram(chart) {
     // Get image data from canvas
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -20,7 +20,7 @@ function drawBrightnessHistogram() {
         dict[brightness] += 1;
     }
 
-    const maxValue = 3000;
+    const maxValue = 1500;
 
     for (let i = 0; i < dict.length; i += 1) {
         if(dict[i] > maxValue) {
@@ -28,36 +28,10 @@ function drawBrightnessHistogram() {
         }
     }
 
-    // Draw histogram
-    var ctx = document.getElementById('chart');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: Array.from(Array(256).keys()),
-            datasets: [{
-                barPercentage: 0.5,
-                barThickness: 6,
-                maxBarThickness: 8,
-                minBarLength: 2,
-                data: dict,
-                backgroundColor: "rgba(0, 0, 255, 1)",
-            }],
-        },
-        options: {
-            title: {
-                display: true,
-                fontSize: 16,
-                text: "Brightness Diagram"
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            },
-        }
-    });
+    chart.config.data.datasets[0].data = dict;
+    chart.update();
+
+    
 }
 
 function invert() {
@@ -79,15 +53,74 @@ function grayscale() {
     
     for (var i = 0; i < data.length; i += 4) {
         var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        data[i] = avg; // red
-        data[i + 1] = avg; // green
-        data[i + 2] = avg; // blue
+        data[i] = avg;      // red
+        data[i + 1] = avg;  // green
+        data[i + 2] = avg;  // blue
     }
 
     context.putImageData(imageData, 0, 0);
 };
 
+function brightnessAdjustment(coefficent) {
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    for (var i = 0; i < data.length; i += 4) {
+        data[i] += coefficent;        // red
+        data[i + 1] += coefficent;    // green
+        data[i + 2] += coefficent;     // blue
+
+        if (data[i] > 255)
+            data[i] = 255;
+        else if (data[i] < 0)
+            data[i] = 0;
+        
+        if (data[i + 1] > 255)
+            data[i + 1] = 255;
+        else if (data[i + 1] < 0)
+            data[i + 1] = 0;
+        
+        if (data[i + 2] > 255)
+            data[i + 2] = 255;
+        else if (data[i + 2] < 0)
+            data[i + 2] = 0;
+    }
+
+    context.putImageData(imageData, 0, 0);
+}
+
 function main() {
+    // Draw histogram
+    var ctx = document.getElementById('chart');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Array.from(Array(256).keys()),
+            datasets: [{
+                barPercentage: 0.5,
+                barThickness: 6,
+                maxBarThickness: 8,
+                minBarLength: 2,
+                data: Array(256).fill(0),
+                backgroundColor: "rgba(0, 0, 255, 1)",
+            }],
+        },
+        options: {
+            title: {
+                display: true,
+                fontSize: 16,
+                text: "Brightness Diagram"
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        }
+    });
+
     // Load button
     const loadButton = document.getElementById("loadButton");
     
@@ -111,7 +144,7 @@ function main() {
 
     // Draw brightness histogram button
     const histButton = document.getElementById("histButton");
-    histButton.addEventListener("click", drawBrightnessHistogram);
+    histButton.addEventListener("click", () => {drawBrightnessHistogram(myChart)});
 
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
@@ -125,16 +158,13 @@ function main() {
     const invertButton = document.getElementById("invertButton");
     invertButton.addEventListener("click", invert);
 
-    /*const brightnessInput = document.getElementById("brightnessInput");
-
+    const brightnessInput = document.getElementById("brightnessInput");
     const brightnessButton = document.getElementById("brightnessButton");
     
     brightnessButton.addEventListener("click", () => {
-        const output = document.getElementById("outputCanvas");
-        var number =  brightnessInput.value;
-        drawBrightnessAdjustment(output, number);
-    });*/
-
+        var coefficent =  parseInt(brightnessInput.value);
+        brightnessAdjustment(coefficent);
+    });
 }
 
 main()
