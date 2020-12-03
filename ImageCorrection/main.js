@@ -92,7 +92,7 @@ function brightnessAdjustment(coefficent) {
 function main() {
     // Draw histogram
     var ctx = document.getElementById('chart');
-    const myChart = new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: Array.from(Array(256).keys()),
@@ -106,6 +106,7 @@ function main() {
             }],
         },
         options: {
+            responsive: true,
             title: {
                 display: true,
                 fontSize: 16,
@@ -136,6 +137,8 @@ function main() {
 
             context.drawImage(image, 0, 0, image.width, image.height,
                  0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            drawBrightnessHistogram(chart);
         }
 
         image.setAttribute("src", url);
@@ -144,7 +147,7 @@ function main() {
 
     // Draw brightness histogram button
     const histButton = document.getElementById("histButton");
-    histButton.addEventListener("click", () => {drawBrightnessHistogram(myChart)});
+    histButton.addEventListener("click", () => {drawBrightnessHistogram(chart)});
 
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
@@ -152,11 +155,17 @@ function main() {
 
     // Adding listener to grayscaleButton
     const grayscaleButton = document.getElementById("grayscaleButton");
-    grayscaleButton.addEventListener("click", grayscale);
+    grayscaleButton.addEventListener("click", () => {
+        grayscale();
+        drawBrightnessHistogram(chart);
+    });
 
     // Adding listener to invertButton
     const invertButton = document.getElementById("invertButton");
-    invertButton.addEventListener("click", invert);
+    invertButton.addEventListener("click", () => {
+        invert();
+        drawBrightnessHistogram(chart);
+    });
 
     const brightnessInput = document.getElementById("brightnessInput");
     const brightnessButton = document.getElementById("brightnessButton");
@@ -164,6 +173,7 @@ function main() {
     brightnessButton.addEventListener("click", () => {
         var coefficent =  parseInt(brightnessInput.value);
         brightnessAdjustment(coefficent);
+        drawBrightnessHistogram(chart);
     });
 }
 

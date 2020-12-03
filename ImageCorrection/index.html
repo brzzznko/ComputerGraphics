@@ -8,30 +8,24 @@
     <style>
         body {
             margin: 20;
-            border-style: none; 
+            border-style: none;
             text-align: center;
         }
         button {
-            margin-left: 15px;
+            margin-left: 5px;
             margin-top: 15px;
         }
         #controlButtons {
-            display: inline-block;
-            position: absolute;
-            margin-top: 15px;
+            display: block;
+            margin-top: 30px;
         }
         .buttons {
-            display: block;
+            display: inline-block;
         }
         .inputs {
             display: inline-block;
             margin-left: 15px;
             width: 30px
-        }
-        .inputPlusButton {
-            display: block;
-            margin-left: 15px;
-            margin-top: 15px;
         }
         #urlInput {
             width: 50vw;
@@ -44,9 +38,12 @@
             border: 1px;
             border-style: solid;
         }
-        #chart {
-            display: block;
-            margin-top: 50px;
+        .chartWrapper {
+            display: inline-block;
+            width: 50vw;
+            height: 50vh;
+            margin-left: 15px;
+            margin-top: 30px;
         }
     </style>
 
@@ -69,19 +66,19 @@
     
     <canvas id="canvas"></canvas>
 
+    <div class= "chartWrapper">
+        <canvas id="chart"></canvas>
+    </div>
+
     <div id = "controlButtons">
         <button id="histButton" class= "buttons">Draw brightness histogram</button>
         <button id="grayscaleButton" class= "buttons">Grayscale</button>
         <button id="invertButton" class= "buttons">Invert</button>
 
-        <div id = "inputPlusButton">
-            <input type="text" id="brightnessInput" class="inputs">
-            <button id="brightnessButton">Brightness adjustment</button>
-        </div>
-        
+        <input type="text" id="brightnessInput" class="inputs">
+        <button id="brightnessButton">Brightness adjustment</button>
     </div>
     
-    <canvas id="chart"></canvas>
     
     <!-- code -->
     <script src="main.js"></script>
