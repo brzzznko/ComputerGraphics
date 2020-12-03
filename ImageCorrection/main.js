@@ -1,10 +1,11 @@
-const defaultImageUrl = "https://i1.wp.com/www.bitcoincenternyc.com/wp-content/uploads/2019/04/Japan-G20.jpg?fit=4181%2C2787&ssl=1"
+const DEFAULT_IMG_URL = "https://i1.wp.com/www.bitcoincenternyc.com/wp-content/uploads/2019/04/Japan-G20.jpg?fit=4181%2C2787&ssl=1"
+const DEFAULT_HIST_MAX = 2500;
 const BUTTON_DISTANCE = 30;
 
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext('2d');
 
-function drawBrightnessHistogram(chart) {
+function drawBrightnessHistogram(chart, maxValue = DEFAULT_HIST_MAX) {
     // Get image data from canvas
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -21,8 +22,6 @@ function drawBrightnessHistogram(chart) {
     }
 
     // Set max y value
-    const maxValue = 1500;
-
     for (let i = 0; i < dict.length; i += 1) {
         if(dict[i] > maxValue) {
             dict[i] = maxValue;
@@ -212,26 +211,36 @@ function main() {
         image.setAttribute("crossOrigin", "");
     })
 
-    // Adding listener to draw brightness histogram button
+    // Adding listener to update brightness histogram button
+    const histInput = document.getElementById("histInput");
+    histInput.setAttribute("value", DEFAULT_HIST_MAX);
+
     const histButton = document.getElementById("histButton");
-    histButton.addEventListener("click", () => {drawBrightnessHistogram(chart)});
+    histButton.addEventListener("click", () => {
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
+    });
 
     // Specifying url input
     const urlInput = document.getElementById("urlInput");
-    urlInput.setAttribute("value", defaultImageUrl);
+    urlInput.setAttribute("value", DEFAULT_IMG_URL);
 
     // Adding listener to grayscaleButton
     const grayscaleButton = document.getElementById("grayscaleButton");
     grayscaleButton.addEventListener("click", () => {
         grayscale();
-        drawBrightnessHistogram(chart);
+
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
     });
 
     // Adding listener to invertButton
     const invertButton = document.getElementById("invertButton");
     invertButton.addEventListener("click", () => {
         invert();
-        drawBrightnessHistogram(chart);
+        
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
     });
 
     // Adding listener to brightnessButton
@@ -241,7 +250,9 @@ function main() {
     brightnessButton.addEventListener("click", () => {
         let coefficent =  parseInt(brightnessInput.value);
         brightnessAdjustment(coefficent);
-        drawBrightnessHistogram(chart);
+        
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
     });
 
     // Adding listener to contrastButton
@@ -251,7 +262,9 @@ function main() {
     contrastButton.addEventListener("click", () => {
         let coefficent =  parseFloat(eval(contrastInput.value));
         contrastAdjustment(coefficent);
-        drawBrightnessHistogram(chart);
+        
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
     });
 
     // Adding listener to binarization
@@ -261,8 +274,12 @@ function main() {
     binarizationButton.addEventListener("click", () => {
         let coefficent =  parseInt(binarizationInput.value);
         binarization(coefficent);
-        drawBrightnessHistogram(chart);
+        
+        let maxValue = parseInt(histInput.value);
+        drawBrightnessHistogram(chart, maxValue);
     });
+
+    loadButton.click();
 }
 
 main()

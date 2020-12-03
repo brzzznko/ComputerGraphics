@@ -20,15 +20,19 @@
             margin-top: 30px;
         }
         .buttons {
+            margin-left: 25px;
             display: inline-block;
         }
         .inputs {
             display: inline-block;
-            margin-left: 15px;
-            width: 30px
+            margin-left: 25px;
+            width: 50px
         }
         #urlInput {
             width: 50vw;
+        }
+        #histInput {
+            width: 50px;
         }
         #canvas {
             display: inline-block;
@@ -71,7 +75,9 @@
     </div>
 
     <div id = "controlButtons">
-        <button id="histButton" class= "buttons">Draw brightness histogram</button>
+        <label>Y max value:</label>
+        <input type="text" id="histInput">
+        <button id="histButton">Update brightness histogram</button>
         <button id="grayscaleButton" class= "buttons">Grayscale</button>
         <button id="invertButton" class= "buttons">Invert</button>
 
