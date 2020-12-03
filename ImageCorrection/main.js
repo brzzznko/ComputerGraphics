@@ -20,6 +20,7 @@ function drawBrightnessHistogram(chart) {
         dict[brightness] += 1;
     }
 
+    // Set max y value
     const maxValue = 1500;
 
     for (let i = 0; i < dict.length; i += 1) {
@@ -28,6 +29,7 @@ function drawBrightnessHistogram(chart) {
         }
     }
 
+    // Updating chart
     chart.config.data.datasets[0].data = dict;
     chart.update();
 }
@@ -131,6 +133,28 @@ function contrastAdjustment(coefficent) {
     context.putImageData(imageData, 0, 0);
 }
 
+function binarization(threshold) {
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    for (var i = 0; i < data.length; i += 4) {
+        let total = data[i] + data[i + 1] + data[i + 2];
+
+        if (total > threshold) {
+            data[i] = 255;
+            data[i + 1] = 255;
+            data[i + 2] = 255;
+        }
+        else {
+            data[i] = 0;
+            data[i + 1] = 0;
+            data[i + 2] = 0;
+        }
+    }
+
+    context.putImageData(imageData, 0, 0);
+}
+
 function main() {
     // Draw histogram
     var ctx = document.getElementById('chart');
@@ -152,7 +176,7 @@ function main() {
             title: {
                 display: true,
                 fontSize: 16,
-                text: "Brightness Diagram"
+                text: "Brightness Histogram"
             },
             scales: {
                 yAxes: [{
@@ -164,11 +188,12 @@ function main() {
         }
     });
 
-    // Load button
+    // Adding listener to load button
     const loadButton = document.getElementById("loadButton");
     
-    // Loading image when button clicked
     loadButton.addEventListener("click", () => {
+        // Loading image when button is clicked
+        
         var url = urlInput.value;
         
         let image = document.createElement("img");
@@ -209,6 +234,7 @@ function main() {
         drawBrightnessHistogram(chart);
     });
 
+    // Adding listener to brightnessButton
     const brightnessInput = document.getElementById("brightnessInput");
     const brightnessButton = document.getElementById("brightnessButton");
     
@@ -218,13 +244,23 @@ function main() {
         drawBrightnessHistogram(chart);
     });
 
+    // Adding listener to contrastButton
     const contrastInput = document.getElementById("contrastInput");
     const contrastButton = document.getElementById("contrastButton");
     
     contrastButton.addEventListener("click", () => {
         let coefficent =  parseFloat(eval(contrastInput.value));
-        console.log(coefficent);
         contrastAdjustment(coefficent);
+        drawBrightnessHistogram(chart);
+    });
+
+    // Adding listener to binarization
+    const binarizationInput = document.getElementById("binarizationInput");
+    const binarizationButton = document.getElementById("binarizationButton");
+    
+    binarizationButton.addEventListener("click", () => {
+        let coefficent =  parseInt(binarizationInput.value);
+        binarization(coefficent);
         drawBrightnessHistogram(chart);
     });
 }
