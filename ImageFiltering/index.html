@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filtering</title>
+
+    <style>
+        body {
+            margin: 20;
+            border-style: none;
+            text-align: center;
+        }
+        button {
+            margin-left: 5px;
+            margin-top: 15px;
+        }
+        #controlButtons {
+            display: block;
+            margin-top: 30px;
+        }
+        .buttons {
+            margin-left: 25px;
+            display: inline-block;
+        }
+        .inputs {
+            display: inline-block;
+            margin-left: 25px;
+            width: 50px
+        }
+        #urlInput {
+            width: 50vw;
+        }
+        #canvas {
+            display: inline-block;
+            width: 37.5vw;
+            height: 50vh;
+            margin-top: 30px;
+            border: 1px;
+            border-style: solid;
+        }
+        
+    </style>
+
+    <!-- libs -->
+</head>
+
+<body>
+    <div>
+        <h1 style="text-align: center;"> Image Filtering </h1>
+    </div>
+
+    <label for="urlInput" id="inputLabel">Image URL:</label>
+    <input type="text" id="urlInput">
+    
+    <button id="loadButton">Load</button>
+    <div></div>
+    
+    <canvas id="canvas"></canvas>
+
+    <div id = "controlButtons">
+        
+        <button id="noiseButton">Noise</button>
+        
+    </div>
+    
+    
+    <!-- code -->
+    <script src="main.js"></script>
+</body>
+</html>
