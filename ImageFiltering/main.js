@@ -248,6 +248,13 @@ function main() {
     const noiseButton = document.getElementById("noiseButton");
     
     noiseButton.addEventListener("click", () => {
+        simpleNoise();
+    });
+
+    // Adding listener to noiseButton
+    const gaussianButton = document.getElementById("gaussianButton");
+    
+    gaussianButton.addEventListener("click", () => {
         gaussianNoise();
     });
 
