@@ -286,14 +286,14 @@ function main() {
         embossing();
     });
 
-    // Adding listener to embossingButton
+    // Adding listener to laplacianButton
     const laplacianButton = document.getElementById("laplacianButton");
     
     laplacianButton.addEventListener("click", () => {
         laplacianEdgeDetection();
     });
 
-    // Adding listener to embossingButton
+    // Adding listener to sobelButton
     const sobelButton = document.getElementById("sobelButton");
     
     sobelButton.addEventListener("click", () => {
