@@ -173,7 +173,7 @@ function laplacianEdgeDetection() {
     0, 1, 0
   ]);
   
-  convolve(filter, 255);
+  convolve(filter);
 }
 
 function sobelEdgeDetection() {
@@ -183,7 +183,7 @@ function sobelEdgeDetection() {
     -1, -2, -1
   ]);
   
-  convolve(filter, 255);
+  convolve(filter);
 }
 
 function simpleNoise() {
