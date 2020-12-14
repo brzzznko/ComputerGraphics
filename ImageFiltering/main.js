@@ -19,7 +19,7 @@ function medianFilter(size = 3) {
     for (var pixelX = 0; pixelX < width; pixelX++) {
       var r = 0, g = 0, b = 0, a = 0;;
 
-      let list = [];
+      let pixels = [];
       
       // Go through filter
       for (var filterY = 0; filterY < size; filterY++) {
@@ -40,14 +40,14 @@ function medianFilter(size = 3) {
           a = inputData[inputIndex + 3];
           
           // Push rgba with brightness
-          list.push([r, g, b, a, Math.round(0.299 * r + 0.5876 * g + 0.114 * b)]);
+          pixels.push([r, g, b, a, Math.round(0.299 * r + 0.5876 * g + 0.114 * b)]);
         }
       }
 
       // Sort by brightness
-      list.sort((a, b) => {return a[4] - b[4]});
+      pixels.sort((a, b) => {return a[4] - b[4]});
       // Get median
-      let median = list[Math.floor(size * size / 2)];
+      let median = pixels[Math.floor(size * size / 2)];
       
       // Set new rgba for pixel
       var outputIndex = (pixelY * width + pixelX) * 4;
@@ -76,7 +76,7 @@ function convolve(filter, offset = 0) {
     // Go through image pixels
     for (var pixelY = 0; pixelY < height; pixelY++) {
       for (var pixelX = 0; pixelX < width; pixelX++) {
-        var r = 0, g = 0, b = 0, a = 0;
+        var r = 0, g = 0, b = 0;
         
         // Go through filter
         for (var filterY = 0; filterY < size; filterY++) {
@@ -96,7 +96,6 @@ function convolve(filter, offset = 0) {
             r += inputData[inputIndex] * weight;
             g += inputData[inputIndex + 1] * weight;
             b += inputData[inputIndex + 2] * weight;
-            a += inputData[inputIndex + 3] * weight;
           }
         }
         
@@ -105,83 +104,59 @@ function convolve(filter, offset = 0) {
         outputData[outputIndex] = r + offset;
         outputData[outputIndex + 1] = g + offset;
         outputData[outputIndex + 2] = b + offset;
-        outputData[outputIndex + 3] = filter.normalized ? a : 255;
+        outputData[outputIndex + 3] = 255;
       }
     }
     
     context.putImageData(output, 0, 0);
 }
 
-function normalize(filter) {
-    var len = filter.length;
-    var normal = new Array(len);
-
-    var sum = 0;
-    for (let i = 0; i < len; i++) {
-      sum += filter[i];
-    }
-
-    if (sum <= 0) {
-      normal.normalized = false;
-      sum = 1;
-    } 
-    else {
-      normal.normalized = true;
-    }
-
-    for (i = 0; i < len; i++) {
-      normal[i] = filter[i] / sum;
-    }
-
-    return normal;
-}
-
 function uniformFilter() {
-    let filter = normalize([
-      1, 1, 1,
-      1, 1, 1,
-      1, 1, 1,
-    ]);
+    let filter = [
+      1/9, 1/9, 1/9,
+      1/9, 1/9, 1/9,
+      1/9, 1/9, 1/9,
+    ];
 
     convolve(filter);
 }
 
 function sharpening() {
-  let filter = normalize([
-    0, -1, 0,
-    -1, 5, -1,
-    0, -1, 0
-  ]);
+  let filter = [
+    -0.25, -0.25, -0.25,
+    -0.25, 3, -0.25,
+    -0.25, -0.25, -0.25
+  ];
 
   convolve(filter, 0);
 }
 
 function embossing() {
-    let filter = normalize([
+    let filter = [
         1, 0, 0,
         0, 0, 0,
         0, 0, -1
-    ]);
+    ];
     
     convolve(filter, 128);
 }
 
 function laplacianEdgeDetection() {
-  let filter = normalize([
+  let filter = [
     0, 1, 0,
     1, -4, 1,
     0, 1, 0
-  ]);
+  ];
   
   convolve(filter);
 }
 
 function sobelEdgeDetection() {
-  let filter = normalize([
+  let filter = [
     1, 2, 1,
     0, 0, 0,
     -1, -2, -1
-  ]);
+  ];
   
   convolve(filter);
 }
