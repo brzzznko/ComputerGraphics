@@ -1,2 +1,2 @@
 # ComputerGraphics
-Practical assignments in the discipline "Computer graphics" at the Altai State Technical University
+Implementation of basic affine transformations, hidden-line removal Roberts algorithm, basic image correction, such as binarization, grayscaling, inverting, brightness adjustment, and contrast adjustment. Filtering images using convolution. Implementation of adding noise, suppressing noise using median and uniform filters, embossing, edge detection. Creating a static scene using Three.js.
